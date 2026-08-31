@@ -1,55 +1,72 @@
-# Континуум
+# Continuum
 
-Интерактивная RU/EN онлайн-книга по высшей математике и параллельная компактная база знаний для Obsidian.
+A bilingual interactive book on higher mathematics, built around visual experiments, precise explanations, and guided practice. The project also includes a compact Obsidian knowledge base for review.
 
-**Онлайн:** [Русская версия](https://artem-x-meta.github.io/continuum/#/ru/) · [English version](https://artem-x-meta.github.io/continuum/#/en/)
+**Read online:** [Russian version](https://artem-x-meta.github.io/continuum/#/ru/) · [English version](https://artem-x-meta.github.io/continuum/#/en/)
 
-## Что внутри
+## What is included
 
-- 18 глав, 80 параграфов и 275 тем из `oglavlenie-vysshaya-matematika.md`;
-- полноценные русский и английский контентные пакеты с общим прогрессом и закладками;
-- полнотекстовый поиск, навигация по главам, закладки, прогресс и тёмная тема;
-- интерактивные лаборатории для матриц, производной, интегральных сумм и рядов Фурье;
-- все 80 веб-параграфов имеют собственные объяснения, словарь, пример с поэтапным раскрытием, разбор ошибки и практику;
-- четыре ключевых параграфа дополнительно получили полноформатные авторские интерактивные уроки;
-- `vault/` — 101 связанная Markdown-заметка с формулами, тегами и wiki-ссылками;
-- `public/continuum-obsidian-vault.zip` — автоматически обновляемый архив, доступный для скачивания с главной страницы.
+- 18 chapters, 80 sections, and 275 topics based on `oglavlenie-vysshaya-matematika.md`;
+- complete Russian and English content packs with shared progress and bookmarks;
+- full-text search, chapter navigation, bookmarks, local progress, and a dark theme;
+- interactive laboratories for matrices, derivatives, Riemann sums, and Fourier series;
+- a dedicated explanation, glossary, step-by-step example, common pitfall, and practice problem for every section;
+- four extended interactive lessons for the core topics;
+- `vault/` with 101 connected Markdown notes, formulas, tags, and wiki links;
+- `public/continuum-obsidian-vault.zip`, regenerated automatically and available from the home page.
 
-## Запуск
+> The web book is bilingual. The downloadable Obsidian vault is currently written in Russian.
+
+## Local development
 
 ```bash
 npm install
 npm run dev
 ```
 
-Production-сборка:
+Create and preview a production build:
 
 ```bash
 npm run build
 npm run preview
 ```
 
-Сборка с тем же base path, что используется на GitHub Pages:
+Build with the same base path used by GitHub Pages:
 
 ```powershell
 $env:BASE_PATH='/continuum/'
 npm run build
 ```
 
-Перегенерировать Obsidian-vault из оглавления и карточек:
+Regenerate the Obsidian vault and its downloadable archive:
 
 ```bash
 npm run vault
 ```
 
-Проверки:
+Run the automated test suite:
 
 ```bash
 npm test
 ```
 
-## Редакторская модель
+Run the browser-based visual and interaction checks while a production preview is running:
 
-Одна веб-страница и одна Obsidian-заметка соответствуют одному параграфу (§). Подпункты становятся внутренними блоками. Краткие карточки для vault лежат в `src/data/guides-*.ts`, глубокий веб-слой — в `src/data/details-*.ts`, а четыре специализированных интерактивных урока — в `src/pages/lessonContent.tsx`.
+```bash
+npm run visual
+```
 
-Английский пакет находится в `src/data/en/`, UI-словарь и locale-контекст — в `src/i18n/`. Публикация из ветки `main` выполняется workflow `.github/workflows/pages.yml`.
+## Content architecture
+
+Each web page and each Obsidian note correspond to one numbered section (§); its numbered subsections become internal learning blocks.
+
+- `src/data/guides-*.ts` contains the concise Russian summaries used by the vault.
+- `src/data/details-*.ts` contains the deeper Russian web lessons.
+- `src/data/en/` contains the complete English content pack.
+- `src/pages/lessonContent.tsx` contains the four extended interactive Russian lessons.
+- `src/i18n/` contains the localized UI copy and locale context.
+- `scripts/build-vault.mjs` generates the Obsidian knowledge base and ZIP archive.
+
+## Deployment
+
+Pushes to `main` are tested, built, and deployed to GitHub Pages by `.github/workflows/pages.yml`. The workflow obtains the repository base path from GitHub Pages, builds the Vite application, and publishes only the generated `dist/` directory.
