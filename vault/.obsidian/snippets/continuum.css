@@ -1,0 +1,32 @@
+body {
+  --font-text-theme: Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-interface-theme: Inter, ui-sans-serif, system-ui, sans-serif;
+  --h1-font: Iowan Old Style, Georgia, serif;
+  --h2-font: Iowan Old Style, Georgia, serif;
+  --link-color: #3b6df2;
+  --link-color-hover: #7856d8;
+  --callout-radius: 14px;
+}
+
+.markdown-preview-view,
+.markdown-source-view.mod-cm6 .cm-scroller {
+  --file-line-width: 780px;
+}
+
+.markdown-preview-view h1,
+.markdown-preview-view h2 {
+  letter-spacing: -0.025em;
+}
+
+.markdown-preview-view .callout {
+  border-width: 1px;
+  box-shadow: 0 8px 24px rgb(23 37 54 / 7%);
+}
+
+.markdown-preview-view mjx-container[display='true'] {
+  padding: 16px;
+  overflow-x: auto;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 14px;
+  background: var(--background-secondary);
+}

@@ -1,0 +1,23 @@
+{
+  "collapse-filter": false,
+  "search": "-path:\".obsidian\"",
+  "showTags": true,
+  "showAttachments": false,
+  "showOrphans": false,
+  "colorGroups": [
+    {
+      "query": "tag:#summary",
+      "color": {
+        "a": 1,
+        "rgb": 3894770
+      }
+    },
+    {
+      "query": "tag:#map",
+      "color": {
+        "a": 1,
+        "rgb": 15897051
+      }
+    }
+  ]
+}

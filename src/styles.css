@@ -1,0 +1,8 @@
+@import './styles/tokens.css';
+@import './styles/shell.css';
+@import './styles/home.css';
+@import './styles/book.css';
+@import './styles/details.css';
+@import './styles/labs.css';
+@import './styles/labs-page.css';
+@import './styles/responsive.css';
