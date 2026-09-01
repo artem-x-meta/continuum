@@ -6,9 +6,9 @@
   "description": "Continuum — a bilingual interactive book on higher mathematics with an Obsidian knowledge base.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/artem-x-meta/continuum.git"
+    "url": "https://github.com/artem-x-meta/continuum-book.git"
   },
-  "homepage": "https://artem-x-meta.github.io/continuum/",
+  "homepage": "https://artem-x-meta.github.io/continuum-book/",
   "scripts": {
     "dev": "vite",
     "build": "npm run vault && tsc -b && vite build",

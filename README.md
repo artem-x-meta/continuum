@@ -2,7 +2,7 @@
 
 A bilingual interactive book on higher mathematics, built around visual experiments, precise explanations, and guided practice. The project also includes a compact Obsidian knowledge base for review.
 
-**Read online:** [Russian version](https://artem-x-meta.github.io/continuum/#/ru/) · [English version](https://artem-x-meta.github.io/continuum/#/en/)
+**Read online:** [Russian version](https://artem-x-meta.github.io/continuum-book/#/ru/) · [English version](https://artem-x-meta.github.io/continuum-book/#/en/)
 
 ## What is included
 
@@ -34,7 +34,7 @@ npm run preview
 Build with the same base path used by GitHub Pages:
 
 ```powershell
-$env:BASE_PATH='/continuum/'
+$env:BASE_PATH='/continuum-book/'
 npm run build
 ```
 
