@@ -171,7 +171,7 @@ export const englishSections1: Record<number, EnglishSectionBundle> = {
       'Operations on Vectors Given by Their Projections',
     ],
     guide: {
-      summary: 'A nonzero vector has magnitude and direction, while the zero vector has zero magnitude; in a chosen basis, every vector is uniquely determined by its coordinates. Vector addition and scalar multiplication are performed coordinatewise, and magnitude is computed using the Pythagorean theorem.',
+      summary: 'A nonzero vector has magnitude and direction, while the zero vector has zero magnitude; in a chosen basis, every vector is uniquely determined by its coordinates. Vector addition and scalar multiplication are performed coordinatewise; the Pythagorean coordinate formula for magnitude applies in an orthonormal Cartesian basis.',
       keyIdea: 'Choosing a basis turns geometric operations on vectors into computations with their coordinates.',
       formula: '\\vec a=a_1\\vec e_1+\\cdots+a_n\\vec e_n',
       question: 'How is the magnitude of a vector found from its Cartesian coordinates?',
@@ -179,8 +179,8 @@ export const englishSections1: Record<number, EnglishSectionBundle> = {
     detail: {
       hook: 'A drone\'s displacement, a force, and a velocity all have magnitude and direction. Vectors turn such directed data into convenient coordinate calculations.',
       explanation: [
-        'A free vector may be translated parallel to itself without changing it, and in a chosen basis it is uniquely specified by its coordinates. Addition and scalar multiplication are performed coordinatewise, and the magnitude of a = (a₁,a₂,a₃) is √(a₁²+a₂²+a₃²).',
-        'A projection onto an axis is a signed number that describes the contribution of the vector in the selected direction. For a nonzero vector, its direction cosines are the ratios of its coordinates to its magnitude and satisfy cos²α + cos²β + cos²γ = 1.',
+        'A free vector may be translated parallel to itself without changing it, and in a chosen basis it is uniquely specified by its coordinates. Addition and scalar multiplication are performed coordinatewise. In an orthonormal Cartesian basis, the magnitude of a = (a₁,a₂,a₃) is √(a₁²+a₂²+a₃²); in an arbitrary basis, the magnitude also depends on the Gram matrix.',
+        'A projection onto an axis is a signed number that describes the contribution of the vector in the selected direction. In an orthonormal Cartesian coordinate system, the direction cosines of a nonzero vector are the ratios of its coordinates to its magnitude and satisfy cos²α + cos²β + cos²γ = 1.',
       ],
       terms: [
         { term: 'Free vector', definition: 'A class of equally directed segments of the same length, independent of an initial point.' },
@@ -423,13 +423,13 @@ export const englishSections1: Record<number, EnglishSectionBundle> = {
     detail: {
       hook: 'Orbits, telescope mirrors, and acoustic reflectors are built from several related curves. Their differences become transparent once a quadratic equation is reduced to canonical form.',
       explanation: [
-        'The general equation of a second-order curve is Ax²+Bxy+Cy²+Dx+Ey+F = 0, where A, B, and C are not all zero. A translation of coordinates eliminates the linear terms, while a rotation of the axes eliminates the mixed term Bxy when necessary.',
+        'The general equation of a second-order curve is Ax²+Bxy+Cy²+Dx+Ey+F = 0, where A, B, and C are not all zero. An orthogonal rotation of the axes eliminates the mixed term Bxy when necessary. A subsequent translation completes squares and moves the center or vertex: for a central conic it eliminates both linear terms, whereas for a parabola one essential linear term remains.',
         'For a nondegenerate conic, the sign of B²−4AC distinguishes the elliptic, parabolic, and hyperbolic types. The canonical equation reveals the center or vertex, semiaxes, foci, and symmetries, but degeneracy must be checked separately.',
       ],
       terms: [
         { term: 'Ellipse', definition: 'The set of points for which the sum of the distances to two foci is constant and greater than the distance between the foci.' },
-        { term: 'Hyperbola', definition: 'The set of points for which the absolute difference of the distances to two foci is a positive constant.' },
-        { term: 'Parabola', definition: 'The set of points equidistant from a fixed point, the focus, and a fixed line, the directrix.' },
+        { term: 'Hyperbola', definition: 'The set of points for which the absolute difference of the distances to two foci is a positive constant strictly smaller than the distance between the foci.' },
+        { term: 'Parabola', definition: 'The set of points equidistant from a fixed point, the focus, and a fixed line, the directrix, which does not pass through the focus.' },
         { term: 'Eccentricity', definition: 'A dimensionless characteristic of a conic equal to the ratio of the distance to a focus to the distance to the corresponding directrix.' },
       ],
       example: {
@@ -630,7 +630,7 @@ export const englishSections1: Record<number, EnglishSectionBundle> = {
     title: 'The Limit of a Function',
     topics: ['The Limit of a Function at a Point', 'One-Sided Limits', 'The Limit of a Function as x → ∞', 'An Infinitely Large Function'],
     guide: {
-      summary: 'If a is a limit point of the domain, then the limit of a function as x→a is L when f(x) becomes arbitrarily close to L at every domain point sufficiently close to, but distinct from, a. A two-sided limit exists if and only if both one-sided limits exist and are equal; in the definitions of a limit at infinity and an infinite limit, proximity is replaced respectively by sufficiently large |x| or by a function value of sufficiently large magnitude with the specified sign.',
+      summary: 'If a is a limit point of the domain, then the limit of a function as x→a is L when f(x) becomes arbitrarily close to L at every domain point sufficiently close to, but distinct from, a. A two-sided limit exists if and only if both one-sided limits exist and are equal. As x→+∞ one requires x>M, and as x→−∞ one requires x<−M; the condition |x|>M belongs to the separate regime |x|→∞. A limit of +∞ or −∞ requires unbounded growth with the corresponding fixed sign.',
       keyIdea: 'The value of the function at a itself has no effect on its limit as x→a.',
       formula: '\\forall\\varepsilon>0\\;\\exists\\delta>0\\;\\forall x\\in D(f):\\ 0<|x-a|<\\delta\\Rightarrow|f(x)-L|<\\varepsilon',
       question: 'What can be concluded about the two-sided limit if the left-hand and right-hand limits are finite but unequal?',
@@ -639,13 +639,13 @@ export const englishSections1: Record<number, EnglishSectionBundle> = {
       hook: 'A function may be undefined at a point and still have completely determined limiting behavior there. The limit separates what happens nearby from the value at the point itself.',
       explanation: [
         'The limit of f(x) as x→a is L if for every ε > 0 there is a δ > 0 such that 0 < |x−a| < δ, with x in the domain, implies |f(x)−L| < ε. The punctured condition excludes x = a, so the value f(a) does not affect this limit.',
-        'A two-sided limit exists if and only if the left-hand and right-hand limits both exist and are equal. As x→∞, proximity to a is replaced by the requirement that x be sufficiently large, while an infinite limit means that the function values exceed every prescribed bound.',
+        'A two-sided limit exists if and only if the left-hand and right-hand limits both exist and are equal. As x→+∞, x must be sufficiently large and positive; as x→−∞, it must be negative with sufficiently large magnitude. A limit of +∞ means f(x)>E for every prescribed E>0, whereas a limit of −∞ means f(x)<−E.',
       ],
       terms: [
         { term: 'Punctured neighborhood', definition: 'A neighborhood of a point with the central point itself removed.' },
         { term: 'One-sided limit', definition: 'A limit obtained by approaching a point only from the left or only from the right.' },
-        { term: 'Limit at infinity', definition: 'A description of the behavior of f(x) as the magnitude of the argument grows without bound.' },
-        { term: 'Infinite limit', definition: 'A statement that the magnitude of a function grows beyond every bound, with a specified sign or without one.' },
+        { term: 'Limit at infinity', definition: 'A description of the behavior of f(x) as x→+∞ or x→−∞; these two regimes are examined separately.' },
+        { term: 'Infinite limit', definition: 'A limit of +∞ or −∞, in which the function values pass every bound with the corresponding fixed sign.' },
       ],
       example: {
         title: 'Resolving an Indeterminate Form',
@@ -685,13 +685,13 @@ export const englishSections1: Record<number, EnglishSectionBundle> = {
       hook: 'A complicated limit often consists of a constant part and an error that vanishes. Infinitesimal functions make it possible to work directly with that disappearing part.',
       explanation: [
         'A function α is infinitesimal in a given limiting process if α→0. The statement f→A is equivalent to a representation f = A+α, where α is infinitesimal, so many limit theorems reduce to rules for manipulating such remainders.',
-        'The sum of finitely many infinitesimals and the product of an infinitesimal with a bounded function are again infinitesimal. The basic reference limits are sin x/x = 1 as x→0 and (1+1/x)ˣ = e as x→∞.',
+        'The sum of finitely many infinitesimals and the product of an infinitesimal with a bounded function are again infinitesimal. The basic reference limits are sin x/x = 1 as x→0 and (1+1/x)ˣ = e as x→+∞.',
       ],
       terms: [
         { term: 'Infinitesimal function', definition: 'A function whose limit in the limiting process under consideration is zero.' },
-        { term: 'Infinitely large function', definition: 'A function whose magnitude exceeds every prescribed positive bound sufficiently close to the limiting regime.' },
+        { term: 'Infinitely large function', definition: 'A function whose magnitude exceeds every prescribed positive bound sufficiently close to the limiting regime; without an eventual fixed sign, this does not imply a limit of +∞ or −∞.' },
         { term: 'First fundamental limit', definition: 'The equality lim sin x/x = 1 as x→0, with the angle measured in radians.' },
-        { term: 'Second fundamental limit', definition: 'The equality lim (1+1/x)ˣ = e as x→∞ on the domain where the expression is defined.' },
+        { term: 'Second fundamental limit', definition: 'The equality lim (1+1/x)ˣ = e as x→+∞ on the domain where the expression is defined.' },
       ],
       example: {
         title: 'A Combination of a Fundamental Limit',
@@ -1031,7 +1031,7 @@ export const englishSections1: Record<number, EnglishSectionBundle> = {
         { term: 'Critical point', definition: 'An interior point of the domain at which the derivative is zero or does not exist.' },
         { term: 'Local extremum', definition: 'A function value that is greatest or least compared with all sufficiently nearby values.' },
         { term: 'Inflection point', definition: 'A point of the graph at which the character of concavity changes.' },
-        { term: 'Asymptote', definition: 'A line whose distance from the graph tends to zero in the corresponding limiting regime.' },
+        { term: 'Asymptote', definition: 'A line whose distance from a point M on an unbounded branch of the graph tends to zero as |M|→∞.' },
       ],
       example: {
         title: 'Complete Analysis of a Cubic Function',
@@ -1056,7 +1056,7 @@ export const englishSections1: Record<number, EnglishSectionBundle> = {
     title: 'Taylor’s Formula',
     topics: ['Taylor’s Formula for a Polynomial', 'Taylor’s Formula for an Arbitrary Function'],
     guide: {
-      summary: 'The Taylor polynomial of degree n at a has the same derivative values through order n as the original function. The remainder describes the approximation error and, under sufficient smoothness, can be written in Lagrange form using the derivative of order n+1.',
+      summary: 'The Taylor polynomial of order n at a has degree at most n and the same derivative values through order n as the original function. The remainder describes the approximation error and, under sufficient smoothness, can be written in Lagrange form using the derivative of order n+1.',
       keyIdea: 'Taylor’s formula replaces a smooth function locally by a polynomial with a controlled error.',
       formula: 'f(x)=\\sum_{k=0}^{n}\\frac{f^{(k)}(a)}{k!}(x-a)^k+R_n(x)',
       question: 'Why is the coefficient of (x−a)^k in the Taylor polynomial equal to f⁽ᵏ⁾(a)/k!?',
@@ -1064,7 +1064,7 @@ export const englishSections1: Record<number, EnglishSectionBundle> = {
     detail: {
       hook: 'Near a point, a complicated smooth function behaves almost like a polynomial. Taylor’s formula displays that polynomial and accounts separately for the error of the replacement.',
       explanation: [
-        'The Taylor polynomial of degree n centered at a is constructed from the values f(a), f′(a), …, f⁽ⁿ⁾(a), with coefficients 1/k!. Its derivatives through order n at a agree with those of the original function.',
+        'The Taylor polynomial of order n centered at a is constructed from the values f(a), f′(a), …, f⁽ⁿ⁾(a), with coefficients 1/k!, and has degree at most n. Its derivatives through order n at a agree with those of the original function.',
         'The equality f(x) = Σₖ₌₀ⁿ f⁽ᵏ⁾(a)(x−a)ᵏ/k! + Rₙ(x) becomes an estimation tool once a form of the remainder is chosen. If f has n+1 continuous derivatives on the interval between a and x, the Lagrange remainder is f⁽ⁿ⁺¹⁾(ξ)(x−a)ⁿ⁺¹/(n+1)! for some ξ between a and x.',
       ],
       terms: [

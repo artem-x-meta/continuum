@@ -1,4 +1,5 @@
 import { BookOpen, Check, Menu, Moon, Search, Sun, X } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 import type { Route } from '../routing';
 import { routeHref } from '../routing';
 import { useLocale } from '../i18n/LocaleContext';
@@ -24,21 +25,50 @@ export function AppHeader({
 }: AppHeaderProps) {
   const { language, setLanguage, copy } = useLocale();
   const c = copy.header;
+  const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
+  const mobileNavRef = useRef<HTMLElement>(null);
+  const catalogActive = currentRoute.page === 'catalog';
+  const labsActive = currentRoute.page === 'labs';
+  const calculusActive = (currentRoute.page === 'chapter' && currentRoute.chapter === 5)
+    || (currentRoute.page === 'section' && currentRoute.section >= 13 && currentRoute.section <= 26);
+  const closeMobileMenu = () => {
+    if (mobileMenuOpen) onToggleMobileMenu();
+  };
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onToggleMobileMenu();
+        mobileMenuButtonRef.current?.focus();
+      }
+    };
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target as Node;
+      if (!mobileNavRef.current?.contains(target) && !mobileMenuButtonRef.current?.contains(target)) onToggleMobileMenu();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('pointerdown', onPointerDown);
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('pointerdown', onPointerDown);
+    };
+  }, [mobileMenuOpen, onToggleMobileMenu]);
   return (
     <header className="topbar">
-      <a href={routeHref({ page: 'home' })} className="brand" aria-label={c.home}>
+      <a href={routeHref({ page: 'home' })} className="brand" aria-label={c.home} aria-current={currentRoute.page === 'home' ? 'page' : undefined}>
         <span className="brand__mark">∫</span>
         <span className="brand__name">{language === 'ru' ? 'континуум' : 'continuum'}</span>
       </a>
 
       <nav className="topbar__nav" aria-label={c.mainNav}>
-        <a className={currentRoute.page === 'catalog' ? 'is-active' : ''} href={routeHref({ page: 'catalog' })}>{c.catalog}</a>
-        <a href={routeHref({ page: 'chapter', chapter: 5 })}>{c.calculus}</a>
-        <a className={currentRoute.page === 'labs' ? 'is-active' : ''} href={routeHref({ page: 'labs' })}>{c.labs}</a>
+        <a className={catalogActive ? 'is-active' : ''} aria-current={catalogActive ? 'page' : undefined} href={routeHref({ page: 'catalog' })}>{c.catalog}</a>
+        <a className={calculusActive ? 'is-active' : ''} aria-current={calculusActive ? 'page' : undefined} href={routeHref({ page: 'chapter', chapter: 5 })}>{c.calculus}</a>
+        <a className={labsActive ? 'is-active' : ''} aria-current={labsActive ? 'page' : undefined} href={routeHref({ page: 'labs' })}>{c.labs}</a>
       </nav>
 
       <div className="topbar__actions">
-        <button type="button" className="search-trigger" onClick={onOpenSearch}>
+        <button type="button" className="search-trigger" onClick={onOpenSearch} aria-keyshortcuts="Control+K Meta+K /">
           <Search size={17} />
           <span>{c.search}</span>
           <kbd>Ctrl K</kbd>
@@ -48,23 +78,23 @@ export function AppHeader({
             <Check size={14} /> {completed}/80
           </a>
         )}
-        <div className="language-switch" aria-label={c.language}>
+        <div className="language-switch" role="group" aria-label={c.language}>
           <button type="button" aria-pressed={language === 'ru'} className={language === 'ru' ? 'is-active' : ''} onClick={() => setLanguage('ru')}>RU</button>
           <button type="button" aria-pressed={language === 'en'} className={language === 'en' ? 'is-active' : ''} onClick={() => setLanguage('en')}>EN</button>
         </div>
-        <button type="button" className="icon-button" onClick={onToggleTheme} aria-label={theme === 'light' ? c.dark : c.light}>
+        <button type="button" className="icon-button" onClick={onToggleTheme} aria-label={theme === 'light' ? c.dark : c.light} aria-pressed={theme === 'dark'}>
           {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
         </button>
-        <button type="button" className="icon-button mobile-menu-button" onClick={onToggleMobileMenu} aria-label={c.menu}>
+        <button ref={mobileMenuButtonRef} type="button" className="icon-button mobile-menu-button" onClick={onToggleMobileMenu} aria-label={mobileMenuOpen ? c.closeMenu : c.menu} aria-expanded={mobileMenuOpen} aria-controls="mobile-navigation">
           {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
       </div>
 
       {mobileMenuOpen && (
-        <nav className="mobile-nav" aria-label={c.mobileNav}>
-          <a href={routeHref({ page: 'catalog' })}><BookOpen size={17} /> {c.catalog}</a>
-          <a href={routeHref({ page: 'chapter', chapter: 5 })}>{c.chapterFive}</a>
-          <a href={routeHref({ page: 'labs' })}>{c.labs}</a>
+        <nav ref={mobileNavRef} id="mobile-navigation" className="mobile-nav" aria-label={c.mobileNav}>
+          <a onClick={closeMobileMenu} aria-current={catalogActive ? 'page' : undefined} href={routeHref({ page: 'catalog' })}><BookOpen size={17} /> {c.catalog}</a>
+          <a onClick={closeMobileMenu} aria-current={calculusActive ? 'page' : undefined} href={routeHref({ page: 'chapter', chapter: 5 })}>{c.chapterFive}</a>
+          <a onClick={closeMobileMenu} aria-current={labsActive ? 'page' : undefined} href={routeHref({ page: 'labs' })}>{c.labs}</a>
           <button type="button" onClick={onOpenSearch}><Search size={17} /> {c.searchShort}</button>
         </nav>
       )}

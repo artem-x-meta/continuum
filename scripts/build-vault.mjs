@@ -1,14 +1,15 @@
-import { readFileSync, readdirSync, mkdirSync, writeFileSync } from 'node:fs';
+import { readFileSync, readdirSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { runInNewContext } from 'node:vm';
 import { zipSync } from 'fflate';
 
-const root = resolve(import.meta.dirname, '..');
-const vaultRoot = join(root, 'vault');
-const tocSource = readFileSync(join(root, 'oglavlenie-vysshaya-matematika.md'), 'utf8');
+const sourceRoot = resolve(import.meta.dirname, '..');
+const outputRoot = process.env.VAULT_OUTPUT_ROOT ? resolve(process.env.VAULT_OUTPUT_ROOT) : sourceRoot;
+const vaultRoot = join(outputRoot, 'vault');
+const tocSource = readFileSync(join(sourceRoot, 'oglavlenie-vysshaya-matematika.md'), 'utf8');
 
 function loadGuides(fileName, variableName) {
-  const source = readFileSync(join(root, 'src', 'data', fileName), 'utf8');
+  const source = readFileSync(join(sourceRoot, 'src', 'data', fileName), 'utf8');
   const marker = source.indexOf('= {');
   if (marker < 0) throw new Error(`Не найден объект в ${fileName}`);
   const literal = source.slice(marker + 2).replace(/;\s*$/, '').trim();
@@ -120,6 +121,16 @@ function write(relativePath, content) {
   writeFileSync(path, `${content.trim()}\n`, 'utf8');
 }
 
+function resetGeneratedVault() {
+  const expectedVaultRoot = resolve(outputRoot, 'vault');
+  const resolvedVaultRoot = resolve(vaultRoot);
+  if (resolvedVaultRoot !== expectedVaultRoot || resolvedVaultRoot === resolve(outputRoot)) {
+    throw new Error(`Refusing to clear unexpected vault path: ${resolvedVaultRoot}`);
+  }
+  rmSync(resolvedVaultRoot, { recursive: true, force: true });
+  mkdirSync(resolvedVaultRoot, { recursive: true });
+}
+
 function sectionFileName(section) {
   return `§ ${String(section.number).padStart(2, '0')} · ${safeName(section.title)}`;
 }
@@ -133,6 +144,8 @@ const mapLines = chapters.map((chapter) => {
   const last = chapter.sections.at(-1)?.number;
   return `- [[${chapterFileName(chapter)}]] — §§ ${first}–${last}`;
 }).join('\n');
+
+resetGeneratedVault();
 
 write('00 · Карта высшей математики.md', `
 ---
@@ -330,7 +343,9 @@ body {
 
 function collectForZip(directory, prefix = 'Континуум') {
   const entries = {};
-  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+  const directoryEntries = readdirSync(directory, { withFileTypes: true })
+    .sort((left, right) => left.name < right.name ? -1 : left.name > right.name ? 1 : 0);
+  for (const entry of directoryEntries) {
     const absolute = join(directory, entry.name);
     const archivePath = `${prefix}/${entry.name}`.replaceAll('\\', '/');
     if (entry.isDirectory()) Object.assign(entries, collectForZip(absolute, archivePath));
@@ -339,8 +354,11 @@ function collectForZip(directory, prefix = 'Континуум') {
   return entries;
 }
 
-const publicRoot = join(root, 'public');
+const publicRoot = join(outputRoot, 'public');
 mkdirSync(publicRoot, { recursive: true });
-writeFileSync(join(publicRoot, 'continuum-obsidian-vault.zip'), zipSync(collectForZip(vaultRoot), { level: 6 }));
+writeFileSync(
+  join(publicRoot, 'continuum-obsidian-vault.zip'),
+  zipSync(collectForZip(vaultRoot), { level: 6, mtime: new Date(1980, 0, 1, 0, 0, 0) }),
+);
 
 console.log(`Obsidian vault готов: ${chapters.length} глав, ${allSections.length} параграфов, ${allSections.length + chapters.length + 3} заметок и ZIP для скачивания.`);

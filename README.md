@@ -31,6 +31,12 @@ npm run build
 npm run preview
 ```
 
+Regenerate the vault first and then build everything:
+
+```bash
+npm run build:all
+```
+
 Build with the same base path used by GitHub Pages:
 
 ```powershell
@@ -44,6 +50,12 @@ Regenerate the Obsidian vault and its downloadable archive:
 npm run vault
 ```
 
+Verify that the committed vault and ZIP match their generated source:
+
+```bash
+npm run vault:check
+```
+
 Run the automated test suite:
 
 ```bash
@@ -55,6 +67,8 @@ Run the browser-based visual and interaction checks while a production preview i
 ```bash
 npm run visual
 ```
+
+The script auto-detects Chrome, Chromium, or Edge on Windows, Linux, and macOS. Set `BROWSER_EXECUTABLE` if the browser is installed in a custom location.
 
 ## Content architecture
 

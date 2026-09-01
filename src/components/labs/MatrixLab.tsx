@@ -18,7 +18,15 @@ export function MatrixLab() {
     { label: c.reflection, value: [-1, 0, 0, 1] },
   ];
   const [matrix, setMatrix] = useState<Matrix2>([1, 0.6, 0.2, 1]);
+  const [draft, setDraft] = useState<string[]>(['1', '0.6', '0.2', '1']);
+  const validDraft = draft.every((value) => {
+    const parsed = Number(value);
+    return value.trim() !== '' && Number.isFinite(parsed) && parsed >= -2 && parsed <= 2;
+  });
   const det = determinant(matrix);
+  const determinantScale = Math.max(1, Math.abs(matrix[0] * matrix[3]), Math.abs(matrix[1] * matrix[2]));
+  const collapsed = Math.abs(det) <= Number.EPSILON * determinantScale * 8;
+  const nearlyCollapsed = !collapsed && Math.abs(det) < 0.001;
   const polygon = useMemo(
     () => [
       transformPoint(matrix, 0, 0),
@@ -31,8 +39,16 @@ export function MatrixLab() {
   const e1 = transformPoint(matrix, 1, 0);
   const e2 = transformPoint(matrix, 0, 1);
 
-  const update = (index: number, value: number) => {
-    setMatrix((current) => current.map((item, itemIndex) => itemIndex === index ? value : item) as Matrix2);
+  const setMatrixValue = (value: Matrix2) => {
+    setMatrix(value);
+    setDraft(value.map(String));
+  };
+
+  const update = (index: number, value: string) => {
+    setDraft((current) => current.map((item, itemIndex) => itemIndex === index ? value : item));
+    const parsed = Number(value);
+    if (value.trim() === '' || !Number.isFinite(parsed) || parsed < -2 || parsed > 2) return;
+    setMatrix((current) => current.map((item, itemIndex) => itemIndex === index ? parsed : item) as Matrix2);
   };
 
   return (
@@ -42,14 +58,14 @@ export function MatrixLab() {
           <span className="eyebrow">{c.lab} 01</span>
           <h3 id="matrix-lab-title">{c.matrixTitle}</h3>
         </div>
-        <button className="icon-button" type="button" onClick={() => setMatrix([1, 0.6, 0.2, 1])} aria-label={c.reset}>
+        <button className="icon-button" type="button" onClick={() => setMatrixValue([1, 0.6, 0.2, 1])} aria-label={c.reset}>
           <RotateCcw size={17} />
         </button>
       </div>
 
       <div className="matrix-lab__body">
         <div className="matrix-lab__visual">
-          <svg viewBox={`0 0 ${size} ${size}`} role="img" aria-label={`${c.matrixTitle}; ${c.determinant} ${det.toFixed(2)}`}>
+          <svg viewBox={`0 0 ${size} ${size}`} role="img" aria-label={`${c.matrixTitle}; ${c.determinant} ${validDraft ? det.toFixed(2) : c.invalid}`}>
             <defs>
               <pattern id="matrix-grid" width={scale} height={scale} patternUnits="userSpaceOnUse">
                 <path d={`M ${scale} 0 L 0 0 0 ${scale}`} fill="none" stroke="currentColor" strokeOpacity=".09" strokeWidth="1" />
@@ -77,26 +93,27 @@ export function MatrixLab() {
           <div className="matrix-input" aria-label={c.matrixInput}>
             <span className="matrix-bracket">[</span>
             <div className="matrix-input__grid">
-              {matrix.map((value, index) => (
+              {draft.map((value, index) => (
                 <label key={index}>
                   <span>{['a₁₁', 'a₁₂', 'a₂₁', 'a₂₂'][index]}</span>
-                  <input type="number" min="-2" max="2" step="0.1" value={value} onChange={(event) => update(index, Number(event.target.value))} />
+                  <input type="number" min="-2" max="2" step="0.1" value={value} aria-invalid={value.trim() === '' || !Number.isFinite(Number(value)) || Number(value) < -2 || Number(value) > 2} aria-describedby={!validDraft ? 'matrix-input-error' : undefined} onChange={(event) => update(index, event.target.value)} />
                 </label>
               ))}
             </div>
             <span className="matrix-bracket">]</span>
           </div>
+          {!validDraft && <p id="matrix-input-error" className="matrix-input__error" role="alert">{c.invalid}</p>}
 
           <div className="preset-row">
             {presets.map((preset) => (
-              <button key={preset.label} type="button" onClick={() => setMatrix(preset.value)}>{preset.label}</button>
+              <button key={preset.label} type="button" onClick={() => setMatrixValue(preset.value)}>{preset.label}</button>
             ))}
           </div>
 
-          <div className="lab-readout">
-            <div><span>{c.determinant}</span><strong>{det.toFixed(2)}</strong></div>
-            <div><span>{c.area}</span><strong>{Math.abs(det).toFixed(2)}</strong></div>
-            <div><span>{c.orientation}</span><strong>{Math.abs(det) < 0.001 ? c.collapsed : det > 0 ? c.preserved : c.reversed}</strong></div>
+          <div className="lab-readout" aria-live="polite">
+            <div><span>{c.determinant}</span><strong>{validDraft ? det.toFixed(2) : '—'}</strong></div>
+            <div><span>{c.area}</span><strong>{validDraft ? Math.abs(det).toFixed(2) : '—'}</strong></div>
+            <div><span>{c.orientation}</span><strong>{!validDraft ? c.invalid : collapsed ? c.collapsed : nearlyCollapsed ? c.nearCollapsed : det > 0 ? c.preserved : c.reversed}</strong></div>
           </div>
           <p className="lab-hint">{c.matrixHint}</p>
         </div>

@@ -13,12 +13,30 @@ const COMPLETED_KEY = 'continuum:completed';
 const BOOKMARKS_KEY = 'continuum:bookmarks';
 const THEME_KEY = 'continuum:theme';
 
-function readNumberSet(key: string) {
+export function parseNumberSet(value: string | null) {
   try {
-    const value = JSON.parse(localStorage.getItem(key) ?? '[]');
-    return new Set<number>(Array.isArray(value) ? value.filter((item) => typeof item === 'number') : []);
+    const parsed = JSON.parse(value ?? '[]');
+    return new Set<number>(Array.isArray(parsed)
+      ? parsed.filter((item) => Number.isInteger(item) && item >= 1 && item <= 80)
+      : []);
   } catch {
     return new Set<number>();
+  }
+}
+
+function readNumberSet(key: string) {
+  try {
+    return parseNumberSet(localStorage.getItem(key));
+  } catch {
+    return new Set<number>();
+  }
+}
+
+function storeNumberSet(key: string, value: Set<number>) {
+  try {
+    localStorage.setItem(key, JSON.stringify([...value].sort((a, b) => a - b)));
+  } catch {
+    // Progress remains usable for the current tab when storage is unavailable.
   }
 }
 
@@ -31,7 +49,12 @@ function App() {
   const [completed, setCompleted] = useState<Set<number>>(() => readNumberSet(COMPLETED_KEY));
   const [bookmarks, setBookmarks] = useState<Set<number>>(() => readNumberSet(BOOKMARKS_KEY));
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    const stored = localStorage.getItem(THEME_KEY);
+    let stored: string | null = null;
+    try {
+      stored = localStorage.getItem(THEME_KEY);
+    } catch {
+      // Fall back to the operating-system preference.
+    }
     if (stored === 'dark' || stored === 'light') return stored;
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
@@ -49,8 +72,55 @@ function App() {
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
-    localStorage.setItem(THEME_KEY, theme);
+    document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')
+      ?.setAttribute('content', theme === 'dark' ? '#101720' : '#f4f2eb');
+    try {
+      localStorage.setItem(THEME_KEY, theme);
+    } catch {
+      // The visual theme still works when storage is unavailable.
+    }
   }, [theme]);
+
+  useEffect(() => {
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === null) {
+        setCompleted(new Set());
+        setBookmarks(new Set());
+        return;
+      }
+      if (event.key === COMPLETED_KEY) setCompleted(parseNumberSet(event.newValue));
+      if (event.key === BOOKMARKS_KEY) setBookmarks(parseNumberSet(event.newValue));
+      if (event.key === THEME_KEY && (event.newValue === 'light' || event.newValue === 'dark')) setTheme(event.newValue);
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
+
+  useEffect(() => {
+    const desktop = window.matchMedia('(min-width: 1181px)');
+    const closeResponsiveNavigation = (event: MediaQueryListEvent) => {
+      if (event.matches) {
+        setMobileNavOpen(false);
+        setSidebarOpen(false);
+      }
+    };
+    if (desktop.matches) {
+      setMobileNavOpen(false);
+      setSidebarOpen(false);
+    }
+    desktop.addEventListener('change', closeResponsiveNavigation);
+    return () => desktop.removeEventListener('change', closeResponsiveNavigation);
+  }, []);
+
+  useEffect(() => {
+    const desktopBookLayout = window.matchMedia('(min-width: 901px)');
+    const closeSidebarOnDesktop = (event: MediaQueryListEvent) => {
+      if (event.matches) setSidebarOpen(false);
+    };
+    if (desktopBookLayout.matches) setSidebarOpen(false);
+    desktopBookLayout.addEventListener('change', closeSidebarOnDesktop);
+    return () => desktopBookLayout.removeEventListener('change', closeSidebarOnDesktop);
+  }, []);
 
   useEffect(() => {
     if (route.page === 'home') document.title = language === 'ru' ? 'Континуум — высшая математика' : 'Continuum — higher mathematics';
@@ -82,13 +152,16 @@ function App() {
     return () => window.removeEventListener('keydown', onShortcut);
   }, [openSearch]);
 
-  const toggleStored = (key: string, value: number, setter: React.Dispatch<React.SetStateAction<Set<number>>>) => {
-    setter((current) => {
-      const next = new Set(current);
-      if (next.has(value)) next.delete(value); else next.add(value);
-      localStorage.setItem(key, JSON.stringify([...next]));
-      return next;
-    });
+  const toggleStored = (key: string, value: number, current: Set<number>, setter: React.Dispatch<React.SetStateAction<Set<number>>>) => {
+    let next = new Set(current);
+    try {
+      next = parseNumberSet(localStorage.getItem(key));
+    } catch {
+      // Use the in-memory state if storage cannot be read.
+    }
+    if (next.has(value)) next.delete(value); else next.add(value);
+    storeNumberSet(key, next);
+    setter(next);
   };
 
   return (
@@ -106,17 +179,18 @@ function App() {
       {route.page === 'home' && <HomePage completed={completed} />}
       {route.page === 'catalog' && <CatalogPage completed={completed} bookmarks={bookmarks} />}
       {route.page === 'labs' && <LabsPage />}
-      {route.page === 'chapter' && <ChapterPage chapterNumber={route.chapter} completed={completed} onOpenSearch={openSearch} sidebarOpen={sidebarOpen} onToggleSidebar={() => setSidebarOpen((value) => !value)} />}
+      {route.page === 'chapter' && <ChapterPage chapterNumber={route.chapter} completed={completed} onOpenSearch={openSearch} sidebarOpen={sidebarOpen} onToggleSidebar={() => setSidebarOpen((value) => !value)} onCloseSidebar={() => setSidebarOpen(false)} />}
       {route.page === 'section' && (
         <LessonPage
           sectionNumber={route.section}
           completed={completed}
           bookmarks={bookmarks}
-          onToggleComplete={(section) => toggleStored(COMPLETED_KEY, section, setCompleted)}
-          onToggleBookmark={(section) => toggleStored(BOOKMARKS_KEY, section, setBookmarks)}
+          onToggleComplete={(section) => toggleStored(COMPLETED_KEY, section, completed, setCompleted)}
+          onToggleBookmark={(section) => toggleStored(BOOKMARKS_KEY, section, bookmarks, setBookmarks)}
           onOpenSearch={openSearch}
           sidebarOpen={sidebarOpen}
           onToggleSidebar={() => setSidebarOpen((value) => !value)}
+          onCloseSidebar={() => setSidebarOpen(false)}
         />
       )}
 

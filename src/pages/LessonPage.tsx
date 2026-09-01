@@ -1,4 +1,4 @@
-import { useMemo, useState, type ComponentType } from 'react';
+import { useMemo, useRef, useState, type ComponentType } from 'react';
 import { ArrowLeft, ArrowRight, Bookmark, Check, Clock3, Copy, Gauge, Lightbulb, Menu, Network } from 'lucide-react';
 import { BookSidebar } from '../components/BookSidebar';
 import { Math } from '../components/Math';
@@ -21,6 +21,7 @@ type LessonPageProps = {
   onOpenSearch: () => void;
   sidebarOpen: boolean;
   onToggleSidebar: () => void;
+  onCloseSidebar: () => void;
 };
 
 const featuredLessons: Partial<Record<number, ComponentType>> = {
@@ -115,6 +116,7 @@ export function LessonPage({
   onOpenSearch,
   sidebarOpen,
   onToggleSidebar,
+  onCloseSidebar,
 }: LessonPageProps) {
   const { language, copy, chapters, chapterMeta, findSection, sectionGuides } = useLocale();
   const c = copy.lesson;
@@ -123,6 +125,8 @@ export function LessonPage({
   const meta = chapterMeta[chapter.number];
   const guide = sectionGuides[section.number];
   const [copied, setCopied] = useState(false);
+  const [copyFailed, setCopyFailed] = useState(false);
+  const tocButtonRef = useRef<HTMLButtonElement>(null);
   const allSections = useMemo(() => chapters.flatMap((item) => item.sections.map((entry) => ({ chapter: item, section: entry }))), [chapters]);
   const currentIndex = allSections.findIndex((item) => item.section.number === section.number);
   const previous = allSections[currentIndex - 1];
@@ -131,21 +135,46 @@ export function LessonPage({
   const complete = completed.has(section.number);
   const bookmarked = bookmarks.has(section.number);
 
+  const closeSidebar = () => {
+    onCloseSidebar();
+    tocButtonRef.current?.focus();
+  };
+
   const copyLink = async () => {
-    await navigator.clipboard?.writeText(window.location.href);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1400);
+    setCopyFailed(false);
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(window.location.href);
+      } else {
+        const input = document.createElement('textarea');
+        input.value = window.location.href;
+        input.setAttribute('readonly', '');
+        input.style.position = 'fixed';
+        input.style.opacity = '0';
+        document.body.appendChild(input);
+        input.select();
+        const succeeded = document.execCommand('copy');
+        input.remove();
+        if (!succeeded) throw new Error('Copy command failed');
+      }
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1400);
+    } catch {
+      setCopied(false);
+      setCopyFailed(true);
+      window.setTimeout(() => setCopyFailed(false), 2200);
+    }
   };
 
   return (
     <div className="book-layout lesson-layout">
-      <BookSidebar currentChapter={chapter.number} currentSection={section.number} completed={completed} onOpenSearch={onOpenSearch} openOnMobile={sidebarOpen} />
+      <BookSidebar currentChapter={chapter.number} currentSection={section.number} completed={completed} onOpenSearch={onOpenSearch} openOnMobile={sidebarOpen} onClose={closeSidebar} />
       <main className="lesson-page">
-        <button className="lesson-mobile-toc" type="button" onClick={onToggleSidebar}><Menu size={17} /> {c.toc}</button>
+        <button ref={tocButtonRef} className="lesson-mobile-toc" type="button" onClick={onToggleSidebar} aria-expanded={sidebarOpen} aria-controls="book-sidebar"><Menu size={17} /> {c.toc}</button>
         <article className="lesson-article">
           <header className={`lesson-header accent-${meta.accent}`}>
             <div className="breadcrumbs"><a href={routeHref({ page: 'catalog' })}>{c.book}</a><span>/</span><a href={routeHref({ page: 'chapter', chapter: chapter.number })}>{c.chapter} {chapter.roman}</a><span>/</span><span>§ {section.number}</span></div>
-            <div className="lesson-header__topline"><span className="eyebrow">§ {section.number} · {meta.shortTitle}</span><div><button type="button" className={bookmarked ? 'is-active' : ''} onClick={() => onToggleBookmark(section.number)} aria-label={c.bookmark}><Bookmark size={18} fill={bookmarked ? 'currentColor' : 'none'} /></button><button type="button" onClick={copyLink} aria-label={c.copy}>{copied ? <Check size={18} /> : <Copy size={18} />}</button></div></div>
+            <div className="lesson-header__topline"><span className="eyebrow">§ {section.number} · {meta.shortTitle}</span><div><button type="button" className={bookmarked ? 'is-active' : ''} onClick={() => onToggleBookmark(section.number)} aria-label={bookmarked ? c.removeBookmark : c.bookmark} aria-pressed={bookmarked}><Bookmark size={18} fill={bookmarked ? 'currentColor' : 'none'} /></button><button type="button" onClick={copyLink} aria-label={copied ? c.copied : copyFailed ? c.copyFailed : c.copy}>{copied ? <Check size={18} /> : <Copy size={18} />}</button><span className="sr-only" role="status" aria-live="polite">{copied ? c.copied : copyFailed ? c.copyFailed : ''}</span></div></div>
             <h1>{section.title}</h1>
             <p>{guide?.summary}</p>
             <div className="lesson-meta"><span><Clock3 size={16} /> {Featured ? '50–65' : '20–30'} {c.minutes}</span><span><Gauge size={16} /> {section.number < 13 ? c.base : section.number < 47 ? c.middle : c.advanced}</span><span>{section.topics.length || 1} {(section.topics.length || 1) === 1 ? c.blockOne : c.blocks}</span></div>
@@ -157,7 +186,7 @@ export function LessonPage({
 
           <footer className="lesson-finish">
             <div><span className="eyebrow">{c.finish}</span><h2>{complete ? c.finishDone : c.finishQuestion}</h2><p>{c.localProgress}</p></div>
-            <button type="button" className={complete ? 'is-complete' : ''} onClick={() => onToggleComplete(section.number)}>{complete ? <><Check size={19} /> {c.done}</> : c.complete}</button>
+            <button type="button" className={complete ? 'is-complete' : ''} onClick={() => onToggleComplete(section.number)} aria-pressed={complete}>{complete ? <><Check size={19} /> {c.done}</> : c.complete}</button>
           </footer>
 
           <nav className="lesson-pagination" aria-label={c.adjacent}>

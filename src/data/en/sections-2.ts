@@ -151,7 +151,7 @@ export const englishSections2: Record<number, EnglishSectionBundle> = {
         { term: 'Rational function', definition: 'A quotient P(x)/Q(x) of two polynomials, where Q(x) ≠ 0.' },
         { term: 'Proper rational fraction', definition: 'A rational fraction whose numerator has lower degree than its denominator.' },
         { term: 'Partial fraction', definition: 'A term with a linear denominator raised to a power k, or with an irreducible quadratic denominator raised to a power k and a linear numerator.' },
-        { term: 'Pole', definition: 'A zero of the denominator at which the rational function is undefined and usually unbounded.' },
+        { term: 'Pole', definition: 'A zero of the reduced denominator near which the magnitude of the rational function grows without bound.' },
       ],
       example: {
         title: 'Partial-fraction decomposition',
@@ -427,7 +427,7 @@ export const englishSections2: Record<number, EnglishSectionBundle> = {
       terms: [
         { term: 'Linearity', definition: 'The property that integration preserves linear combinations of functions.' },
         { term: 'Additivity over intervals', definition: 'The ability to split an integral at an intermediate point and add the resulting integrals.' },
-        { term: 'Monotonicity of the integral', definition: 'Preservation of the pointwise order of functions when they are integrated over the same oriented interval.' },
+        { term: 'Monotonicity of the integral', definition: 'If f ≤ g on [a, b] with a < b, then ∫ₐᵇf ≤ ∫ₐᵇg; reversing the limits reverses the inequality.' },
         { term: 'Integral estimate', definition: 'Bounds on the value of an integral obtained from bounds on its integrand.' },
       ],
       example: {
@@ -458,13 +458,13 @@ export const englishSections2: Record<number, EnglishSectionBundle> = {
     guide: {
       summary: 'When changing variables in a definite integral, compute the new limits immediately; when integrating by parts, include the boundary term. On a symmetric interval, parity may shorten the calculation or give zero at once.',
       keyIdea: 'In a definite integral, transform the integrand, differential, and limits simultaneously.',
-      formula: '\\int_a^b f(x)\\,dx=\\int_\\alpha^\\beta f(\\varphi(t))\\varphi^{\\prime}(t)\\,dt,\\quad \\varphi(\\alpha)=a,\\ \\varphi(\\beta)=b',
+      formula: '\\int_a^b f(x)\\,dx=\\int_\\alpha^\\beta f(\\varphi(t))\\varphi^{\\prime}(t)\\,dt,\\quad f\\in C([a,b]),\\ \\varphi\\in C^1([\\alpha,\\beta]),\\ \\varphi([\\alpha,\\beta])\\subseteq[a,b],\\ \\varphi(\\alpha)=a,\\ \\varphi(\\beta)=b',
       question: 'Why is it convenient to change the limits immediately after a substitution?',
     },
     detail: {
       hook: 'Definite integrals use the same transformations as indefinite integrals, but the limits become part of the calculation. Careful treatment of them often makes a solution shorter and more reliable.',
       explanation: [
-        'Under the substitution x = φ(t), transform both limits together with the integrand and dx. There is then no need to return to x, and the calculation is completed in the new variable. The conditions on the substitution must ensure that the given interval is traversed correctly.',
+        'Under the substitution x = φ(t), transform both limits together with the integrand and dx. Sufficient hypotheses are f ∈ C([a, b]), φ ∈ C¹([α, β]), φ([α, β]) ⊆ [a, b], φ(α) = a, and φ(β) = b; there is then no need to return to x. Less regular integrands require a separate substitution theorem.',
         'Integration by parts takes the form ∫ₐᵇu dv = [uv]ₐᵇ − ∫ₐᵇv du. On a symmetric interval, the integral of an odd function is zero, while the integral of an even function is twice the integral over half the interval. Before evaluating, check for symmetry and whether the region should be split.',
       ],
       terms: [
@@ -494,7 +494,7 @@ export const englishSections2: Record<number, EnglishSectionBundle> = {
     title: 'Improper integrals',
     topics: [
       'Integral over an infinite interval (an improper integral of the first kind)',
-      'Integral of a discontinuous function (an improper integral of the second kind)',
+      'Integral of an unbounded function (an improper integral of the second kind)',
     ],
     guide: {
       summary: 'An improper integral is defined as a limit of proper integrals when an endpoint is infinite or the integrand is unbounded. It converges only when all improper parts have finite limits; cancellation of divergent parts instead concerns the principal value.',
@@ -805,7 +805,7 @@ export const englishSections2: Record<number, EnglishSectionBundle> = {
     detail: {
       hook: 'A differential equation describes a law of change without requiring the trajectory itself to be known in advance. Models of growth, motion, cooling, and electrical circuits are formulated in this way.',
       explanation: [
-        'An ordinary differential equation relates an independent variable, an unknown function, and its derivatives. Its order is the order of the highest derivative present, and linearity means that the function and its derivatives occur only to the first power and are not multiplied together. A solution is a sufficiently smooth function that turns the equation into an identity on an interval.',
+        'An ordinary differential equation relates an independent variable, an unknown function, and its derivatives. Its order is the order of the highest derivative present. It is linear if it can be written as aₙ(x)y⁽ⁿ⁾ + … + a₁(x)y′ + a₀(x)y = g(x), where the coefficients depend only on the independent variable. A solution is a sufficiently smooth function that turns the equation into an identity on an interval.',
         'The general solution of a regular nth-order equation usually contains n arbitrary constants. Initial conditions prescribed at one point form an initial-value problem and, under suitable assumptions, select a unique solution. Boundary conditions are prescribed at different points and may lead to no solution, a unique solution, or multiple solutions.',
       ],
       terms: [
@@ -851,7 +851,7 @@ export const englishSections2: Record<number, EnglishSectionBundle> = {
       hook: 'First-order equations take many forms, but a handful of recognizable structures cover most introductory problems. Classifying an equation before calculating saves more time than trying substitutions at random.',
       explanation: [
         'In a separable equation, expressions involving y and x are moved to opposite sides, with care taken not to lose solutions through division. A homogeneous equation y′ = F(y/x) is reduced by y = ux, while a linear equation y′ + p(x)y = q(x) is multiplied by the integrating factor exp(∫p(x) dx). A power substitution turns the Bernoulli equation into a linear one.',
-        'The differential form M dx + N dy = 0 is exact when Mᵧ = Nₓ on a suitable simply connected region, and a potential function can then be recovered. The Clairaut equation y = xy′ + ψ(y′) contains a family of straight lines and sometimes a singular solution. After obtaining an answer, check its domain and substitute it into the original equation.',
+        'If M, N ∈ C¹(D) on an open simply connected domain D, then the differential form M dx + N dy = 0 is exact if and only if Mᵧ = Nₓ, and a potential function can then be recovered. The Clairaut equation y = xy′ + ψ(y′) contains a family of straight lines and sometimes a singular solution. After obtaining an answer, check its domain and substitute it into the original equation.',
       ],
       terms: [
         { term: 'Separable variables', definition: 'A structure reducible to the form dy/h(y) = g(x)dx.' },
@@ -938,7 +938,7 @@ export const englishSections2: Record<number, EnglishSectionBundle> = {
       hook: 'Constant coefficients turn a differential equation into an algebraic problem about polynomial roots. Those roots immediately reveal the growth, decay, and oscillation of solutions.',
       explanation: [
         'For a homogeneous equation, the substitution y = exp(λx) produces the characteristic polynomial. A simple real root λ corresponds to exp(λx), while a root of multiplicity m corresponds to exp(λx), x exp(λx), …, xᵐ⁻¹ exp(λx). These functions form the required part of a fundamental set.',
-        'Complex-conjugate roots α ± iβ give the real solutions exp(αx) cos(βx) and exp(αx) sin(βx). A positive real part causes growth, a negative one causes decay, and the imaginary part determines the oscillation frequency. Arbitrary constants are determined by initial or boundary conditions.',
+        'Complex-conjugate roots α ± iβ give the real solutions exp(αx) cos(βx) and exp(αx) sin(βx). As x → +∞, a positive real part causes growth and a negative one causes decay, while the imaginary part determines the oscillation frequency; as x → −∞, the growth behavior reverses. Arbitrary constants are determined by initial or boundary conditions.',
       ],
       terms: [
         { term: 'Characteristic polynomial', definition: 'The polynomial obtained by substituting y = exp(λx) into a homogeneous linear equation with constant coefficients.' },
@@ -972,7 +972,7 @@ export const englishSections2: Record<number, EnglishSectionBundle> = {
       'Solving nth-order linear nonhomogeneous differential equations (n > 2) with constant coefficients and a right-hand side of special form',
     ],
     guide: {
-      summary: 'The general solution of a linear nonhomogeneous equation is the sum of the general solution of the corresponding homogeneous equation and one particular solution. Variation of parameters constructs a particular solution from a fundamental set, while the method of undetermined coefficients applies to special right-hand sides and must account for resonance.',
+      summary: 'The general solution of a linear nonhomogeneous equation is the sum of the general solution of the corresponding homogeneous equation and one particular solution. Variation of parameters constructs a particular solution from a fundamental set, while for constant-coefficient equations the method of undetermined coefficients applies to special right-hand sides and must account for resonance.',
       keyIdea: 'Linearity separates the natural modes of the homogeneous system from the forced response to the right-hand side.',
       formula: 'y=y_h+y_p',
       question: 'How does resonance change the trial form of a particular solution in the method of undetermined coefficients?',
@@ -981,12 +981,12 @@ export const englishSections2: Record<number, EnglishSectionBundle> = {
       hook: 'A nonhomogeneous right-hand side represents an external input to a system. Linearity allows the system’s natural motion to be separated from its forced response.',
       explanation: [
         'If L is a linear differential operator, the general solution of L[y] = f has the form y = yₕ + yₚ. Here yₕ is the general solution of L[y] = 0, and yₚ is any one particular solution of the original equation. The difference between any two particular solutions belongs to the homogeneous solution space.',
-        'Variation of parameters seeks yₚ as a combination of fundamental solutions with variable coefficients and applies to general right-hand sides. For exponentials, polynomials, sines, and cosines, the method of undetermined coefficients is convenient. If the trial form overlaps the homogeneous solution, multiply it by a sufficient power of x to remove the resonance.',
+        'Variation of parameters seeks yₚ as a combination of fundamental solutions with variable coefficients and applies to general right-hand sides. For constant-coefficient linear equations whose right-hand sides are finite sums of Pₘ(x)e^(αx)cos(βx) and Pₘ(x)e^(αx)sin(βx), the method of undetermined coefficients is convenient. If the trial form overlaps the homogeneous solution, multiply it by a sufficient power of x to remove the resonance.',
       ],
       terms: [
         { term: 'Particular solution', definition: 'One specific solution of a nonhomogeneous differential equation.' },
         { term: 'Variation of parameters', definition: 'A method that replaces the constants in a linear combination of fundamental solutions by unknown functions.' },
-        { term: 'Method of undetermined coefficients', definition: 'A method that assumes a particular solution of a prescribed form for special classes of right-hand sides.' },
+        { term: 'Method of undetermined coefficients', definition: 'A method that assumes a particular solution of a prescribed form for a constant-coefficient linear equation with a special right-hand side.' },
         { term: 'Resonance', definition: 'An overlap between the trial form of the forced solution and part of the solution of the homogeneous equation.' },
       ],
       example: {

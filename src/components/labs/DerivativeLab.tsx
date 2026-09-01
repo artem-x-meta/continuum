@@ -5,7 +5,7 @@ import { useLocale } from '../../i18n/LocaleContext';
 const width = 640;
 const height = 330;
 const xRange: [number, number] = [-3.2, 3.2];
-const yRange: [number, number] = [-4.2, 4.2];
+const yRange: [number, number] = [-5.4, 5.4];
 const sx = (x: number) => ((x - xRange[0]) / (xRange[1] - xRange[0])) * width;
 const sy = (y: number) => height - ((y - yRange[0]) / (yRange[1] - yRange[0])) * height;
 
@@ -20,6 +20,7 @@ export function DerivativeLab() {
   const c = copy.labs;
   const [x0, setX0] = useState(-0.8);
   const [h, setH] = useState(1.4);
+  const maxH = Math.min(2.4, xRange[1] - x0);
   const slope = secantSlope(x0, h);
   const tangent = exactDerivative(x0);
   const curve = useMemo(() => Array.from({ length: 161 }, (_, index) => {
@@ -62,11 +63,15 @@ export function DerivativeLab() {
       <div className="lab-controls lab-controls--two">
         <label>
           <span>{c.point} x₀ <strong>{x0.toFixed(2)}</strong></span>
-          <input type="range" min="-2.2" max="2.2" step="0.05" value={x0} onChange={(event) => setX0(Number(event.target.value))} />
+          <input type="range" min="-2.2" max="2.2" step="0.05" value={x0} onChange={(event) => {
+            const nextX = Number(event.target.value);
+            setX0(nextX);
+            setH((current) => Math.min(current, xRange[1] - nextX));
+          }} />
         </label>
         <label>
           <span>{c.step} h <strong>{h.toFixed(2)}</strong></span>
-          <input type="range" min="0.05" max="2.4" step="0.05" value={h} onChange={(event) => setH(Number(event.target.value))} />
+          <input type="range" min="0.05" max={maxH} step="0.05" value={Math.min(h, maxH)} onChange={(event) => setH(Number(event.target.value))} />
         </label>
       </div>
 

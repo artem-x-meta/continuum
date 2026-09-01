@@ -1,4 +1,5 @@
 import { ArrowRight, Check, Clock3, Menu, Target } from 'lucide-react';
+import { useRef } from 'react';
 import { BookSidebar } from '../components/BookSidebar';
 import { routeHref } from '../routing';
 import { useLocale } from '../i18n/LocaleContext';
@@ -9,21 +10,27 @@ type ChapterPageProps = {
   onOpenSearch: () => void;
   sidebarOpen: boolean;
   onToggleSidebar: () => void;
+  onCloseSidebar: () => void;
 };
 
-export function ChapterPage({ chapterNumber, completed, onOpenSearch, sidebarOpen, onToggleSidebar }: ChapterPageProps) {
+export function ChapterPage({ chapterNumber, completed, onOpenSearch, sidebarOpen, onToggleSidebar, onCloseSidebar }: ChapterPageProps) {
   const { copy, chapters, chapterMeta } = useLocale();
   const c = copy.chapter;
   const chapter = chapters.find((item) => item.number === chapterNumber) ?? chapters[0];
   const meta = chapterMeta[chapter.number];
   const completeCount = chapter.sections.filter((section) => completed.has(section.number)).length;
   const percent = Math.round((completeCount / chapter.sections.length) * 100);
+  const tocButtonRef = useRef<HTMLButtonElement>(null);
+  const closeSidebar = () => {
+    onCloseSidebar();
+    tocButtonRef.current?.focus();
+  };
 
   return (
     <div className="book-layout">
-      <BookSidebar currentChapter={chapter.number} completed={completed} onOpenSearch={onOpenSearch} openOnMobile={sidebarOpen} />
+      <BookSidebar currentChapter={chapter.number} completed={completed} onOpenSearch={onOpenSearch} openOnMobile={sidebarOpen} onClose={closeSidebar} />
       <main className="chapter-page">
-        <button className="lesson-mobile-toc chapter-mobile-toc" type="button" onClick={onToggleSidebar}><Menu size={17} /> {copy.lesson.toc}</button>
+        <button ref={tocButtonRef} className="lesson-mobile-toc chapter-mobile-toc" type="button" onClick={onToggleSidebar} aria-expanded={sidebarOpen} aria-controls="book-sidebar"><Menu size={17} /> {copy.lesson.toc}</button>
         <header className={`chapter-hero accent-${meta.accent}`}>
           <div className="breadcrumbs"><a href={routeHref({ page: 'catalog' })}>{c.book}</a><span>/</span><span>{c.chapter} {chapter.roman}</span></div>
           <div className="chapter-hero__main">

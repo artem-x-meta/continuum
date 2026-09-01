@@ -1,94 +1,339 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { ArrowRight, BookOpen, Search, X } from 'lucide-react';
-import { routeHref } from '../routing';
+import type { BookSection, Chapter, ChapterMeta } from '../data/book';
+import type { LessonDetail } from '../data/lessonDetailTypes';
+import type { SectionGuide } from '../data/sectionGuides';
+import type { Language } from '../i18n/copy';
 import { useLocale } from '../i18n/LocaleContext';
+import { routeHref } from '../routing';
 
 type SearchDialogProps = {
   open: boolean;
   onClose: () => void;
 };
 
+export type SectionSearchSource = {
+  chapter: Chapter;
+  section: BookSection;
+  meta: ChapterMeta;
+  guide: SectionGuide;
+  detail: LessonDetail;
+};
+
+type SearchEntry = SectionSearchSource & {
+  text: string;
+  headingText: string;
+  sectionText: string;
+};
+
+const frequentSections = [1, 4, 16, 20, 29, 35, 48, 66];
+const dialogTitleId = 'book-search-dialog-title';
+const inputId = 'book-search-input';
+const listboxId = 'book-search-results';
+
+export function normalizeSearchText(value: string, language: Language) {
+  return value
+    .toLocaleLowerCase(language === 'ru' ? 'ru-RU' : 'en-US')
+    .replaceAll('ё', 'е')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function sectionContentParts(section: BookSection, guide: SectionGuide, detail: LessonDetail): Array<string | number> {
+  return [
+    section.number,
+    `§${section.number}`,
+    `§ ${section.number}`,
+    section.page,
+    section.title,
+    ...section.topics.flatMap((topic) => [topic.number, topic.page, topic.title]),
+    guide.summary,
+    guide.keyIdea,
+    guide.question,
+    guide.formula,
+    detail.hook,
+    ...detail.explanation,
+    ...detail.terms.flatMap(({ term, definition }) => [term, definition]),
+    detail.example.title,
+    detail.example.problem,
+    ...detail.example.steps,
+    detail.example.answer,
+    detail.pitfall,
+    detail.practice.question,
+    detail.practice.answer,
+  ];
+}
+
+export function buildSectionSearchText({ chapter, section, meta, guide, detail }: SectionSearchSource, language: Language) {
+  const localizedNumbers = language === 'ru'
+    ? [`глава ${chapter.number}`, `параграф ${section.number}`]
+    : [`chapter ${chapter.number}`, `section ${section.number}`];
+  const parts: Array<string | number> = [
+    chapter.number,
+    chapter.roman,
+    chapter.title,
+    ...localizedNumbers,
+    meta.kicker,
+    meta.shortTitle,
+    meta.description,
+    meta.outcome,
+    meta.formula,
+    meta.symbol,
+    meta.track,
+    meta.accent,
+    meta.hours,
+    ...sectionContentParts(section, guide, detail),
+  ];
+  return normalizeSearchText(parts.join(' '), language);
+}
+
+export function matchesSearchText(searchText: string, query: string, language: Language) {
+  const tokens = normalizeSearchText(query, language).split(' ').filter(Boolean);
+  const normalizedSearchText = normalizeSearchText(searchText, language);
+  return tokens.length === 0 || tokens.every((token) => normalizedSearchText.includes(token));
+}
+
 export function SearchDialog({ open, onClose }: SearchDialogProps) {
-  const { language, copy, chapters, chapterMeta } = useLocale();
+  const { language, copy, chapters, chapterMeta, sectionGuides, lessonDetails } = useLocale();
   const c = copy.search;
-  const normalize = (value: string) => value.toLocaleLowerCase(language).replaceAll('ё', 'е').trim();
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
+  const panelRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const entries = useMemo(() => chapters.flatMap((chapter) => chapter.sections.map((section) => ({
-    chapter,
-    section,
-    text: normalize(`${section.number} ${section.title} ${section.topics.map((topic) => topic.title).join(' ')}`),
-  }))), [chapters, language]);
-  const results = useMemo(() => {
-    const normalized = normalize(query);
-    if (!normalized) return entries.filter((entry) => [1, 4, 16, 20, 29, 35, 48, 66].includes(entry.section.number));
-    return entries.filter((entry) => entry.text.includes(normalized)).slice(0, 10);
-  }, [entries, query]);
-
-  useEffect(() => setActiveIndex(0), [language, query, results.length]);
+  const optionRefs = useRef(new Map<number, HTMLAnchorElement>());
+  const onCloseRef = useRef(onClose);
 
   useEffect(() => {
-    if (open) {
-      setQuery('');
-      window.setTimeout(() => inputRef.current?.focus(), 40);
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
+  const entries = useMemo<SearchEntry[]>(() => chapters.flatMap((chapter) => chapter.sections.map((section) => {
+    const source: SectionSearchSource = {
+      chapter,
+      section,
+      meta: chapterMeta[chapter.number],
+      guide: sectionGuides[section.number],
+      detail: lessonDetails[section.number],
+    };
+    return {
+      ...source,
+      text: buildSectionSearchText(source, language),
+      headingText: normalizeSearchText([
+        section.number,
+        `§${section.number}`,
+        section.title,
+        ...section.topics.flatMap((topic) => [topic.number, topic.title]),
+      ].join(' '), language),
+      sectionText: normalizeSearchText(sectionContentParts(section, source.guide, source.detail).join(' '), language),
+    };
+  })), [chapterMeta, chapters, language, lessonDetails, sectionGuides]);
+
+  const matchingResults = useMemo(() => {
+    if (!normalizeSearchText(query, language)) {
+      const entriesByNumber = new Map(entries.map((entry) => [entry.section.number, entry]));
+      return frequentSections.map((number) => entriesByNumber.get(number)).filter((entry): entry is SearchEntry => entry !== undefined);
     }
-  }, [open]);
+    return entries
+      .filter((entry) => matchesSearchText(entry.text, query, language))
+      .sort((left, right) => {
+        const priority = (entry: SearchEntry) => matchesSearchText(entry.headingText, query, language)
+          ? 0
+          : matchesSearchText(entry.sectionText, query, language) ? 1 : 2;
+        return priority(left) - priority(right) || left.section.number - right.section.number;
+      });
+  }, [entries, language, query]);
+  const results = useMemo(() => matchingResults.slice(0, 12), [matchingResults]);
+  const safeActiveIndex = results.length ? Math.min(activeIndex, results.length - 1) : -1;
+  const activeOptionId = safeActiveIndex >= 0 ? `book-search-option-${results[safeActiveIndex].section.number}` : undefined;
+
+  useEffect(() => {
+    setQuery('');
+    setActiveIndex(0);
+  }, [language]);
 
   useEffect(() => {
     if (!open) return;
-    const closeOnEscape = (event: KeyboardEvent) => event.key === 'Escape' && onClose();
-    window.addEventListener('keydown', closeOnEscape);
-    return () => window.removeEventListener('keydown', closeOnEscape);
-  }, [open, onClose]);
+    setQuery('');
+    setActiveIndex(0);
+  }, [open]);
+
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [query, results.length]);
+
+  useEffect(() => {
+    if (!open || safeActiveIndex < 0) return;
+    optionRefs.current.get(results[safeActiveIndex].section.number)?.scrollIntoView?.({ block: 'nearest' });
+  }, [open, results, safeActiveIndex]);
+
+  useEffect(() => {
+    if (!open) return;
+    const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const previousBodyOverflow = document.body.style.overflow;
+    const backgroundElements = Array.from(document.querySelectorAll<HTMLElement>('.app-shell > :not(.search-modal)'));
+    const backgroundState = backgroundElements.map((element) => ({
+      element,
+      inert: element.hasAttribute('inert'),
+      ariaHidden: element.getAttribute('aria-hidden'),
+    }));
+    for (const element of backgroundElements) {
+      element.setAttribute('inert', '');
+      element.setAttribute('aria-hidden', 'true');
+    }
+    document.body.style.overflow = 'hidden';
+    const focusFrame = window.requestAnimationFrame(() => inputRef.current?.focus({ preventScroll: true }));
+
+    const trapFocusAndClose = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onCloseRef.current();
+        return;
+      }
+      if (event.key !== 'Tab') return;
+      const panel = panelRef.current;
+      if (!panel) return;
+      const focusable = Array.from(panel.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href]:not([tabindex="-1"]), [tabindex]:not([tabindex="-1"])',
+      ));
+      if (!focusable.length) {
+        event.preventDefault();
+        panel.focus();
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const current = document.activeElement;
+      if (event.shiftKey && (current === first || !panel.contains(current))) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (current === last || !panel.contains(current))) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', trapFocusAndClose, true);
+    return () => {
+      window.cancelAnimationFrame(focusFrame);
+      document.removeEventListener('keydown', trapFocusAndClose, true);
+      document.body.style.overflow = previousBodyOverflow;
+      for (const state of backgroundState) {
+        if (!state.inert) state.element.removeAttribute('inert');
+        if (state.ariaHidden === null) state.element.removeAttribute('aria-hidden');
+        else state.element.setAttribute('aria-hidden', state.ariaHidden);
+      }
+      if (previouslyFocused?.isConnected) previouslyFocused.focus({ preventScroll: true });
+    };
+  }, [open]);
 
   if (!open) return null;
+
+  const activateResult = (index: number) => {
+    const result = results[index];
+    if (!result) return;
+    window.location.hash = routeHref({ page: 'section', section: result.section.number });
+    onCloseRef.current();
+  };
 
   const onInputKeyDown = (event: ReactKeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'ArrowDown') {
       event.preventDefault();
-      if (!results.length) return;
-      setActiveIndex((index) => Math.min(index + 1, results.length - 1));
-    }
-    if (event.key === 'ArrowUp') {
+      if (results.length) setActiveIndex((index) => Math.min(index + 1, results.length - 1));
+    } else if (event.key === 'ArrowUp') {
       event.preventDefault();
-      if (!results.length) return;
-      setActiveIndex((index) => Math.max(index - 1, 0));
-    }
-    if (event.key === 'Enter' && results[activeIndex]) {
-      window.location.hash = routeHref({ page: 'section', section: results[activeIndex].section.number });
-      onClose();
+      if (results.length) setActiveIndex((index) => Math.max(index - 1, 0));
+    } else if (event.key === 'Home' && results.length) {
+      event.preventDefault();
+      setActiveIndex(0);
+    } else if (event.key === 'End' && results.length) {
+      event.preventDefault();
+      setActiveIndex(results.length - 1);
+    } else if (event.key === 'Enter' && safeActiveIndex >= 0) {
+      event.preventDefault();
+      activateResult(safeActiveIndex);
     }
   };
 
+  const statusText = query
+    ? matchingResults.length
+      ? `${c.found}: ${matchingResults.length}`
+      : `${c.emptyTitle}. ${c.emptyBody}`
+    : c.frequent;
+
   return (
-    <div className="search-modal" role="dialog" aria-modal="true" aria-label={c.dialog} onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
-      <div className="search-panel">
+    <div
+      className="search-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={dialogTitleId}
+      onMouseDown={(event) => event.target === event.currentTarget && onCloseRef.current()}
+    >
+      <div ref={panelRef} className="search-panel" tabIndex={-1}>
+        <h2 id={dialogTitleId} className="sr-only">{c.dialog}</h2>
         <div className="search-panel__input">
-          <Search size={21} />
-          <input ref={inputRef} value={query} onChange={(event) => setQuery(event.target.value)} onKeyDown={onInputKeyDown} placeholder={c.placeholder} />
-          <button type="button" onClick={onClose} aria-label={c.closeButton}><X size={19} /></button>
+          <Search size={21} aria-hidden="true" />
+          <label className="sr-only" htmlFor={inputId}>{c.dialog}</label>
+          <input
+            id={inputId}
+            ref={inputRef}
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded="true"
+            aria-haspopup="listbox"
+            aria-controls={listboxId}
+            aria-activedescendant={activeOptionId}
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            onKeyDown={onInputKeyDown}
+            placeholder={c.placeholder}
+            autoComplete="off"
+          />
+          <button type="button" onClick={() => onCloseRef.current()} aria-label={c.closeButton}><X size={19} /></button>
         </div>
-        <div className="search-panel__label">{query ? `${c.found}: ${results.length}` : c.frequent}</div>
-        <div className="search-results">
-          {results.map(({ chapter, section }, index) => (
-            <a key={section.number} className={activeIndex === index ? 'is-active' : ''} href={routeHref({ page: 'section', section: section.number })} onMouseEnter={() => setActiveIndex(index)} onClick={onClose}>
-              <span className={`search-result__symbol accent-${chapterMeta[chapter.number].accent}`}>{chapterMeta[chapter.number].symbol}</span>
-              <span>
-                <small>{c.chapter} {chapter.roman} · § {section.number}</small>
-                <strong>{section.title}</strong>
-              </span>
-              <ArrowRight size={18} />
-            </a>
-          ))}
+        <div className="search-panel__label" aria-hidden="true">{query ? `${c.found}: ${matchingResults.length}` : c.frequent}</div>
+        <div
+          id={listboxId}
+          className={results.length ? 'search-results' : 'search-results search-results--empty'}
+          role="listbox"
+          aria-label={c.dialog}
+        >
+          {results.map(({ chapter, section }, index) => {
+            const optionId = `book-search-option-${section.number}`;
+            return (
+              <a
+                id={optionId}
+                ref={(node) => {
+                  if (node) optionRefs.current.set(section.number, node);
+                  else optionRefs.current.delete(section.number);
+                }}
+                key={section.number}
+                role="option"
+                aria-selected={safeActiveIndex === index}
+                tabIndex={-1}
+                className={safeActiveIndex === index ? 'is-active' : ''}
+                href={routeHref({ page: 'section', section: section.number })}
+                onMouseDown={(event) => event.preventDefault()}
+                onMouseEnter={() => setActiveIndex(index)}
+                onClick={() => onCloseRef.current()}
+              >
+                <span className={`search-result__symbol accent-${chapterMeta[chapter.number].accent}`}>{chapterMeta[chapter.number].symbol}</span>
+                <span>
+                  <small>{c.chapter} {chapter.roman} · § {section.number}</small>
+                  <strong>{section.title}</strong>
+                </span>
+                <ArrowRight size={18} aria-hidden="true" />
+              </a>
+            );
+          })}
           {!results.length && (
-            <div className="empty-search">
+            <div className="empty-search" aria-hidden="true">
               <BookOpen size={25} />
               <strong>{c.emptyTitle}</strong>
               <span>{c.emptyBody}</span>
             </div>
           )}
         </div>
+        <span className="sr-only" role="status" aria-live="polite">{statusText}</span>
         <div className="search-panel__footer"><span><kbd>↑</kbd><kbd>↓</kbd> {c.choose}</span><span><kbd>esc</kbd> {c.close}</span></div>
       </div>
     </div>

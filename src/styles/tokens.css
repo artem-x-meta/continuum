@@ -11,12 +11,15 @@
   --navy: #172536;
   --navy-2: #22364d;
   --blue: #3b6df2;
+  --blue-solid: #315fdc;
   --blue-soft: #e8efff;
   --violet: #7856d8;
+  --violet-solid: #6846c5;
   --violet-soft: #f0ebff;
   --coral: #ed775d;
   --coral-soft: #fff0eb;
   --green: #238876;
+  --green-solid: #176e60;
   --green-soft: #e7f6f1;
   --gold: #f2c85b;
   --gold-soft: #fff7db;
@@ -44,15 +47,18 @@
   --ink-faint: #7f8d9d;
   --line: #2c3947;
   --line-strong: #405061;
-  --navy: #e8eef5;
-  --navy-2: #c7d3df;
+  --navy: #172536;
+  --navy-2: #22364d;
   --blue: #7599ff;
+  --blue-solid: #3f69cf;
   --blue-soft: #1d2b50;
   --violet: #a78aee;
+  --violet-solid: #7353c7;
   --violet-soft: #30274b;
   --coral: #ff967e;
   --coral-soft: #472821;
   --green: #5dc5ae;
+  --green-solid: #237565;
   --green-soft: #193a35;
   --gold: #f4cf70;
   --gold-soft: #403820;
@@ -72,13 +78,14 @@ img, svg { max-width: 100%; }
 ::selection { color: var(--ink); background: var(--gold); }
 
 :focus-visible { outline: 3px solid color-mix(in srgb, var(--blue) 70%, white); outline-offset: 3px; }
+.sr-only { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; overflow: hidden !important; clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important; }
 .page-width { width: min(1240px, calc(100% - 64px)); margin-inline: auto; }
 .section-space { padding-block: 112px; }
 .eyebrow { display: inline-block; color: var(--blue); font-size: .72rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
 .button { display: inline-flex; min-height: 50px; align-items: center; justify-content: center; gap: 10px; padding: 0 20px; border: 1px solid transparent; border-radius: 999px; font-size: .92rem; font-weight: 750; transition: transform .18s ease, background .18s ease, border-color .18s ease; }
 .button:hover { transform: translateY(-2px); }
-.button--primary { color: #fff; background: var(--blue); box-shadow: 0 10px 28px color-mix(in srgb, var(--blue) 25%, transparent); }
-.button--primary:hover { background: color-mix(in srgb, var(--blue) 86%, black); }
+.button--primary { color: #fff; background: var(--blue-solid); box-shadow: 0 10px 28px color-mix(in srgb, var(--blue) 25%, transparent); }
+.button--primary:hover { background: color-mix(in srgb, var(--blue-solid) 86%, black); }
 .button--ghost { border-color: var(--line-strong); background: color-mix(in srgb, var(--surface) 55%, transparent); }
 .button--ghost:hover { border-color: var(--blue); }
 .button--light { color: #172536; background: #fffefa; }

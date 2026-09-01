@@ -1,4 +1,4 @@
-import { useId, useState, type ReactNode } from 'react';
+import { useId, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react';
 import { AlertTriangle, Brain, Check, ChevronDown, ChevronRight, ChevronUp, Lightbulb, RotateCcw, Target } from 'lucide-react';
 import type { LessonDetail } from '../data/lessonDetailTypes';
 import { useLocale } from '../i18n/LocaleContext';
@@ -47,13 +47,13 @@ export function QuickCheck({ question, options, correctIndex }: QuickCheckProps)
     <section className="quick-check" id="check">
       <span className="quick-check__kicker">{c.check}</span>
       <h3>{question}</h3>
-      <div className="quick-check__options">
+      <div className="quick-check__options" role="radiogroup" aria-label={question}>
         {options.map((option, index) => {
           const state = selected === null ? '' : index === correctIndex ? 'is-correct' : selected === index ? 'is-wrong' : 'is-muted';
-          return <button key={`${id}-${index}`} className={state} type="button" onClick={() => setSelected(index)} disabled={selected !== null}><span>{String.fromCharCode(65 + index)}</span>{option.label}{selected !== null && index === correctIndex && <Check size={17} />}</button>;
+          return <button key={`${id}-${index}`} className={state} type="button" role="radio" aria-checked={selected === index} onClick={() => setSelected(index)} disabled={selected !== null}><span>{String.fromCharCode(65 + index)}</span>{option.label}{selected !== null && index === correctIndex && <Check size={17} />}</button>;
         })}
       </div>
-      {selected !== null && <div className={`quick-check__feedback ${selected === correctIndex ? 'is-correct' : 'is-wrong'}`}><strong>{selected === correctIndex ? c.exact : c.almost}</strong> {options[selected].explanation}</div>}
+      {selected !== null && <div className={`quick-check__feedback ${selected === correctIndex ? 'is-correct' : 'is-wrong'}`} role="status" aria-live="polite"><strong>{selected === correctIndex ? c.exact : c.almost}</strong> {options[selected].explanation}</div>}
       {selected !== null && <button type="button" className="quick-check__retry" onClick={() => setSelected(null)}>{c.retry}</button>}
     </section>
   );
@@ -62,10 +62,13 @@ export function QuickCheck({ question, options, correctIndex }: QuickCheckProps)
 export function Reveal({ label, children }: { label?: string; children: ReactNode }) {
   const { copy } = useLocale();
   const [open, setOpen] = useState(false);
+  const id = useId();
+  const buttonId = `${id}-button`;
+  const panelId = `${id}-panel`;
   return (
     <div className={`reveal ${open ? 'is-open' : ''}`}>
-      <button type="button" onClick={() => setOpen((value) => !value)}>{open ? <ChevronUp size={17} /> : <ChevronDown size={17} />}{open ? copy.blocks.hide : label ?? copy.blocks.showAnswer}</button>
-      {open && <div className="reveal__content">{children}</div>}
+      <button id={buttonId} type="button" onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-controls={panelId}>{open ? <ChevronUp size={17} /> : <ChevronDown size={17} />}{open ? copy.blocks.hide : label ?? copy.blocks.showAnswer}</button>
+      {open && <div id={panelId} className="reveal__content" role="region" aria-labelledby={buttonId}>{children}</div>}
     </div>
   );
 }
@@ -73,15 +76,28 @@ export function Reveal({ label, children }: { label?: string; children: ReactNod
 export function TermExplorer({ terms }: { terms: LessonDetail['terms'] }) {
   const { copy } = useLocale();
   const [active, setActive] = useState(0);
+  const id = useId();
+  const activateFromKeyboard = (event: ReactKeyboardEvent<HTMLButtonElement>, index: number) => {
+    let next = index;
+    if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = (index + 1) % terms.length;
+    else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = (index - 1 + terms.length) % terms.length;
+    else if (event.key === 'Home') next = 0;
+    else if (event.key === 'End') next = terms.length - 1;
+    else return;
+    event.preventDefault();
+    setActive(next);
+    const tabs = event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="tab"]');
+    tabs?.[next]?.focus();
+  };
   return (
     <section className="term-explorer">
       <div className="term-explorer__header"><Brain size={19} /><span>{copy.blocks.glossary}</span></div>
       <div className="term-explorer__tabs" role="tablist">
         {terms.map((term, index) => (
-          <button key={term.term} type="button" role="tab" aria-selected={active === index} className={active === index ? 'is-active' : ''} onClick={() => setActive(index)}>{term.term}</button>
+          <button key={term.term} id={`${id}-tab-${index}`} type="button" role="tab" aria-selected={active === index} aria-controls={`${id}-panel`} tabIndex={active === index ? 0 : -1} className={active === index ? 'is-active' : ''} onClick={() => setActive(index)} onKeyDown={(event) => activateFromKeyboard(event, index)}>{term.term}</button>
         ))}
       </div>
-      <div className="term-explorer__definition" role="tabpanel">
+      <div id={`${id}-panel`} className="term-explorer__definition" role="tabpanel" aria-labelledby={`${id}-tab-${active}`} tabIndex={0}>
         <span>{String(active + 1).padStart(2, '0')}</span>
         <p>{terms[active]?.definition}</p>
       </div>

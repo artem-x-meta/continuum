@@ -198,11 +198,11 @@ export const englishSections3: Record<number, EnglishSectionBundle> = {
     ],
     guide: {
       summary:
-        'A surface integral of the second kind measures the flux of a vector field through an oriented surface. Reversing the orientation changes its sign, while the Gauss–Ostrogradsky and Stokes formulas relate surface integrals to volume and line integrals.',
+        'A surface integral of the second kind measures the flux of a vector field through an oriented surface. For a C¹ field, the Gauss–Ostrogradsky theorem relates flux across a closed piecewise-smooth boundary to a volume integral of divergence, while Stokes’ theorem relates flux of curl across an oriented surface to circulation along its consistently oriented boundary.',
       keyIdea:
-        'The flux through a closed surface is determined by the total divergence of the field within the volume bounded by that surface.',
+        'Flux across a closed surface with the outward normal is determined by the total divergence of a smooth field within the enclosed volume.',
       formula:
-        '\\iint_{\\partial V}\\mathbf F\\cdot\\mathbf n\\,dS=\\iiint_V\\nabla\\cdot\\mathbf F\\,dV',
+        '\\iint_{\\partial V}\\mathbf F\\cdot\\mathbf n_{\\mathrm{out}}\\,dS=\\iiint_V\\nabla\\cdot\\mathbf F\\,dV',
       question:
         'How does the flux of a vector field change when the chosen normal is replaced by the opposite normal?',
     },
@@ -211,7 +211,7 @@ export const englishSections3: Record<number, EnglishSectionBundle> = {
         'The flow of a fluid through a membrane depends on both the velocity and the chosen side of the surface. A surface integral of the second kind measures this oriented transport.',
       explanation: [
         'The flux of a field F through an oriented surface S is ∫∫ₛ F·n dS, where n is the chosen unit normal. Replacing the normal by the opposite normal reverses the sign of the flux.',
-        'The Gauss–Ostrogradsky theorem replaces the flux through a closed surface by the integral of the divergence over the volume. Stokes’ theorem relates the flux of the curl through a surface to the circulation of the field around its consistently oriented boundary.',
+        'Suppose F has continuous first derivatives in a neighborhood of the closure of a bounded volume V, and its piecewise-smooth boundary ∂V is oriented by the outward normal. The Gauss–Ostrogradsky theorem then replaces the flux across ∂V by the integral of div F over V. For an oriented piecewise-smooth surface S and a C¹ field F in its neighborhood, Stokes’ theorem relates the flux of curl F across S to the circulation of F along the consistently oriented boundary ∂S.',
       ],
       terms: [
         {
@@ -582,7 +582,7 @@ export const englishSections3: Record<number, EnglishSectionBundle> = {
       keyIdea:
         'Agreement of all derivatives at a single point does not yet guarantee that a function equals its Taylor series.',
       formula:
-        'f(x)=\\sum_{n=0}^{N}\\frac{f^{(n)}(a)}{n!}(x-a)^n+R_N(x),\\qquad R_N(x)\\to0',
+        'f(x)=\\sum_{n=0}^{N}\\frac{f^{(n)}(a)}{n!}(x-a)^n+R_N(x),\\qquad R_N(x)\\xrightarrow[N\\to\\infty]{}0',
       question:
         'What condition on the remainder turns Taylor’s formula into an expansion of the function as an infinite series?',
     },
@@ -591,7 +591,7 @@ export const englishSections3: Record<number, EnglishSectionBundle> = {
         'A polynomial is easy to evaluate, differentiate, and integrate. A Taylor series makes it possible to replace a complicated function by a polynomial with controlled accuracy.',
       explanation: [
         'The coefficient of (x − a)ⁿ in the Taylor series is f⁽ⁿ⁾(a)/n!, and when a = 0 the series is called a Maclaurin series. These coefficients ensure that the derivatives of the function and the formal series agree at the center.',
-        'The infinite series represents the function only where the remainder Rₙ(x) tends to zero. Infinite differentiability alone does not guarantee analyticity or equality with the Taylor series.',
+        'The infinite series represents the function only at those points x where the remainder R_N(x) tends to zero as N → ∞. Infinite differentiability alone does not guarantee analyticity or equality with the Taylor series.',
       ],
       terms: [
         {
@@ -961,7 +961,7 @@ export const englishSections3: Record<number, EnglishSectionBundle> = {
     ],
     guide: {
       summary:
-        'A scalar field is described by a function of the coordinates, and its level curves and level surfaces consist of points with the same value. A nonzero gradient points in the direction of steepest increase, and the directional derivative along a unit vector is its scalar product with the gradient.',
+        'A scalar field is described by a function of the coordinates, and its level curves and level surfaces consist of points with the same value. If the field is differentiable at a point, its directional derivative along a unit vector is the scalar product of that vector with the gradient; a nonzero gradient points in the direction of steepest increase.',
       keyIdea:
         'The gradient is perpendicular to a regular level surface and encodes all directional derivatives.',
       formula:
@@ -974,7 +974,7 @@ export const englishSections3: Record<number, EnglishSectionBundle> = {
         'A contour map gives a value at every point, but the direction of ascent must be extracted from it. The gradient makes both that direction and the rate of increase explicit.',
       explanation: [
         'A level curve or level surface is defined by the equation u = c and consists of points at which the field has the same value. A nonzero gradient ∇u is perpendicular to a regular level surface.',
-        'The directional derivative along a unit vector e is Dₑu = ∇u·e. It is greatest in the direction of the gradient, and its maximum value is |∇u|.',
+        'If u is differentiable at the point, the directional derivative along a unit vector e is Dₑu = ∇u·e. When ∇u ≠ 0, it is greatest in the direction ∇u/|∇u|, and its maximum value is |∇u|. When ∇u = 0, all such directional derivatives are zero and there is no unique direction of steepest increase.',
       ],
       terms: [
         {
@@ -1224,7 +1224,7 @@ export const englishSections3: Record<number, EnglishSectionBundle> = {
     ],
     guide: {
       summary:
-        'A function of a complex variable is written as f(z) = u(x,y) + iv(x,y), and its complex derivative must be the same for every direction of the increment. When the first partial derivatives are continuous, the Cauchy–Riemann equations ensure analyticity, and a nonzero derivative locally preserves angles.',
+        'A function of a complex variable is written as f(z) = u(x,y) + iv(x,y), and its complex derivative must be the same for every direction of the increment. If the first partial derivatives are continuous on an open domain and the Cauchy–Riemann equations hold throughout that domain, the function is analytic there; a nonzero derivative locally preserves angles.',
       keyIdea:
         'Complex differentiability is substantially more restrictive than real differentiability of a function of two variables.',
       formula:
@@ -1236,8 +1236,8 @@ export const englishSections3: Record<number, EnglishSectionBundle> = {
       hook:
         'In the complex plane, the existence of a single derivative constrains a function more strongly than all ordinary partial derivatives. Analyticity and angle preservation grow out of this rigidity.',
       explanation: [
-        'A function f(z) = u(x, y) + iv(x, y) is complex differentiable if its difference quotient has one limit independent of the direction of Δz. When the first partial derivatives are continuous, this is equivalent to the Cauchy–Riemann equations uₓ = vᵧ and uᵧ = −vₓ.',
-        'A function is called analytic if it is complex differentiable in a neighborhood of every point of the domain. An analytic function with nonzero derivative locally preserves angles and defines a conformal mapping.',
+        'A function f(z) = u(x, y) + iv(x, y) is complex differentiable at z₀ if its difference quotient has one limit independent of the direction of Δz. If the first partial derivatives of u and v are continuous in a neighborhood of z₀, the Cauchy–Riemann equations uₓ = vᵧ and uᵧ = −vₓ at z₀ are sufficient for complex differentiability at that point.',
+        'A function is analytic on an open domain if it is complex differentiable at every point of that domain. Thus, when the first partial derivatives are continuous, the Cauchy–Riemann equations must hold throughout the domain rather than at just one point. An analytic function with nonzero derivative locally preserves angles and defines a conformal mapping.',
       ],
       terms: [
         {
@@ -1289,11 +1289,11 @@ export const englishSections3: Record<number, EnglishSectionBundle> = {
     ],
     guide: {
       summary:
-        'The integral of a complex function is evaluated along an oriented contour through its parametrization. Cauchy’s theorem gives a zero integral for an analytic function around a closed contour in a suitable domain, while Cauchy’s integral formula reconstructs values of the function inside the contour.',
+        'The integral of a complex function is evaluated along an oriented contour through its parametrization. If a function is analytic on a contour and throughout the region it encloses, Cauchy’s theorem gives a zero integral and Cauchy’s integral formula reconstructs interior values; for a general closed contour, its winding number must be included.',
       keyIdea:
         'Analyticity turns data on the boundary of a domain into information about the values of the function inside it.',
       formula:
-        'f(z_0)=\\frac{1}{2\\pi i}\\oint_\\gamma\\frac{f(z)}{z-z_0}\\,dz',
+        '\\oint_\\gamma\\frac{f(z)}{z-z_0}\\,dz=2\\pi i\\,\\operatorname{Ind}(\\gamma,z_0)f(z_0)',
       question:
         'What conditions allow one to conclude that the integral of an analytic function around a closed contour is zero?',
     },
@@ -1302,7 +1302,7 @@ export const englishSections3: Record<number, EnglishSectionBundle> = {
         'An integral around a closed contour can recover the value of a function inside it. This connection between boundary and interior is one of the central ideas of complex analysis.',
       explanation: [
         'The complex integral along a parametrized contour γ is evaluated as ∫f(z(t))z′(t)dt and depends on orientation. If the function has an antiderivative, the integral depends only on the endpoints of the path.',
-        'Cauchy’s theorem makes the integral of an analytic function around a suitable closed contour equal to zero. Cauchy’s integral formula expresses f(z₀) through ∮f(z)/(z − z₀)dz and demonstrates the strong interdependence of the values of an analytic function.',
+        'Let γ be a positively oriented simple closed piecewise-smooth contour, and let f be analytic on an open set containing γ and its entire interior. Cauchy’s theorem then gives ∮γf(z)dz = 0, while for an interior point z₀, Cauchy’s integral formula expresses f(z₀) through ∮γf(z)/(z − z₀)dz. For a general closed contour, the right-hand side includes the winding number Ind(γ, z₀).',
       ],
       terms: [
         {
@@ -1318,12 +1318,12 @@ export const englishSections3: Record<number, EnglishSectionBundle> = {
         {
           term: "Cauchy's theorem",
           definition:
-            'The statement that the integral of an analytic function around the boundary of a domain containing no singularities is zero.',
+            'The statement that the integral is zero when the function is analytic on a simple closed contour and throughout the region enclosed by it.',
         },
         {
           term: "Cauchy's integral formula",
           definition:
-            'The formula f(z₀) = 1/(2πi) ∮f(z)/(z − z₀)dz for a point inside a positively oriented contour.',
+            'The formula f(z₀) = 1/(2πi) ∮f(z)/(z − z₀)dz for a point inside a positively oriented simple contour when f is analytic on and inside it; a general contour requires its winding number.',
         },
       ],
       example: {
@@ -1425,11 +1425,11 @@ export const englishSections3: Record<number, EnglishSectionBundle> = {
     ],
     guide: {
       summary:
-        'The residue of a function at an isolated singularity is the coefficient of (z − z₀)⁻¹ in its Laurent series. The residue theorem expresses an integral around a closed contour in terms of the sum of the residues inside it and makes it possible to evaluate many real integrals.',
+        'The residue of a function at an isolated singularity is the coefficient of (z − z₀)⁻¹ in its Laurent series. For a meromorphic function with no singularity on a closed contour, the residue theorem expresses the integral through the enclosed residues weighted by their winding numbers.',
       keyIdea:
         'For a contour integral, all local information about an isolated singularity is compressed into a single coefficient.',
       formula:
-        '\\oint_\\gamma f(z)\\,dz=2\\pi i\\sum_{z_k\\in\\operatorname{Int}\\gamma}\\operatorname{Res}_{z=z_k}f',
+        '\\oint_\\gamma f(z)\\,dz=2\\pi i\\sum_k\\operatorname{Ind}(\\gamma,z_k)\\operatorname{Res}_{z=z_k}f',
       question:
         'How can the residue at a simple pole be found without constructing the full Laurent series?',
     },
@@ -1438,7 +1438,7 @@ export const englishSections3: Record<number, EnglishSectionBundle> = {
         'For a contour integral, the entire complexity of a singular point often reduces to a single coefficient. Residues turn a traversal of the contour into a finite sum of local contributions.',
       explanation: [
         'The residue of a function at an isolated singularity z₀ is the coefficient c₋₁ in its Laurent series. At a simple pole, it can often be found from the limit lim z→z₀ (z − z₀)f(z).',
-        'The residue theorem states that a positively oriented contour integral equals 2πi times the sum of the residues inside the contour. Singularities on the contour itself require a separate treatment and are not covered by the usual statement.',
+        'Suppose f is meromorphic inside and on a positively oriented simple closed piecewise-smooth contour γ, has finitely many poles inside, and has no singularity on γ. Then the integral equals 2πi times the sum of the enclosed residues. For a general closed contour, each residue is multiplied by Ind(γ, zₖ); singularities on the contour are not covered by the usual theorem.',
       ],
       terms: [
         {
@@ -1454,7 +1454,7 @@ export const englishSections3: Record<number, EnglishSectionBundle> = {
         {
           term: 'Residue theorem',
           definition:
-            'The formula that expresses a contour integral in terms of the sum of the residues of the singularities inside the contour.',
+            'For a meromorphic function with no singularity on the contour, the formula that expresses a contour integral through enclosed residues weighted by their winding numbers.',
         },
       ],
       example: {
@@ -1499,7 +1499,7 @@ export const englishSections3: Record<number, EnglishSectionBundle> = {
         'A differential equation can be simplified by replacing a function with its integral transform. The Laplace transform converts derivatives and convolutions into convenient algebraic expressions.',
       explanation: [
         'The Laplace transform is defined by the integral F(s) = ∫₀∞ e^(−st)f(t)dt in the half-plane where it converges. Piecewise continuity and exponential order of the function provide standard sufficient conditions for existence.',
-        'Linearity allows sums to be transformed term by term, a time shift introduces an exponential factor, and convolution becomes multiplication of transforms. A table of original functions and transforms reduces most calculations to recognizing a form.',
+        'Linearity allows sums to be transformed term by term. For the unilateral transform, a delay must include the Heaviside function: for a > 0, L{H(t − a)f(t − a)} = e^(−as)F(s); without H, this identity is generally false. Convolution becomes multiplication of transforms.',
       ],
       terms: [
         {
@@ -1549,19 +1549,19 @@ export const englishSections3: Record<number, EnglishSectionBundle> = {
     ],
     guide: {
       summary:
-        'The inverse Laplace transform reconstructs the original function from its transform using an integral along a vertical line or methods based on decomposition and residues. The line of integration is chosen to the right of all singularities of the transform, and its poles determine the principal exponential components of the original function.',
+        'The inverse Laplace transform reconstructs the original function from its transform using an integral along a vertical line or methods based on decomposition and residues. The integration line is chosen inside the region of convergence, to the right of its abscissa; when a meromorphic continuation exists, it consequently lies to the right of the transform’s singularities.',
       keyIdea:
         'Decomposing a rational transform into partial fractions often replaces direct evaluation of the inversion integral.',
       formula:
         'f(t)=\\frac{1}{2\\pi i}\\int_{\\gamma-i\\infty}^{\\gamma+i\\infty}e^{st}F(s)\\,ds',
       question:
-        'Why is the parameter γ in the inversion integral chosen to the right of all singularities of the transform?',
+        'Why must the line Re s = γ in the inversion integral lie in the region of convergence of the transform?',
     },
     detail: {
       hook:
         'Obtaining a transform is usually easier than recovering the original function from it. The inverse Laplace transform reconstructs the original function from poles, a transform table, and the inversion integral.',
       explanation: [
-        'The Bromwich inversion formula integrates eˢᵗF(s) along the vertical line Re s = γ, located in the region of convergence to the right of the singularities. Under standard conditions, it reconstructs the original function at points of continuity.',
+        'The Bromwich inversion formula integrates eˢᵗF(s) along a vertical line Re s = γ in the region of convergence, so γ is chosen greater than the abscissa of convergence. If F has a meromorphic continuation to the left, this line lies to the right of its singularities. Under standard conditions, the formula reconstructs the original function at points of continuity and the half-sum of the one-sided limits at a jump.',
         'For rational transforms, partial-fraction decomposition and comparison with a table are more practical. Repeated and complex-conjugate poles give rise to polynomial factors and oscillatory functions, respectively.',
       ],
       terms: [
@@ -1609,11 +1609,11 @@ export const englishSections3: Record<number, EnglishSectionBundle> = {
     topics: [],
     guide: {
       summary:
-        'The operational method converts a linear initial-value problem for a differential equation or system into an algebraic problem for the transforms of the unknown functions. The initial conditions enter the transforms of the derivatives, after which the solution is obtained algebraically and returned by the inverse Laplace transform.',
+        'The operational method converts a sufficiently regular linear initial-value problem for a differential equation or system into an algebraic problem for the transforms of the unknown functions. Right-hand initial values enter the transforms of the derivatives, after which the solution is obtained algebraically and returned by the inverse Laplace transform.',
       keyIdea:
         'The Laplace transform simultaneously incorporates the differential operator and the initial data.',
       formula:
-        '\\mathcal L\\{y^{(n)}\\}=s^nY(s)-\\sum_{k=0}^{n-1}s^{n-1-k}y^{(k)}(0)',
+        '\\mathcal L\\{y^{(n)}\\}=s^nY(s)-\\sum_{k=0}^{n-1}s^{n-1-k}y^{(k)}(0+)',
       question:
         'How do the initial conditions appear in the algebraic equation for the transform of the solution?',
     },
@@ -1621,7 +1621,7 @@ export const englishSections3: Record<number, EnglishSectionBundle> = {
       hook:
         'The Laplace transform solves an initial-value problem together with its initial conditions. After transformation, the differential problem becomes a system of algebraic equations.',
       explanation: [
-        'For the first derivative, L{y′} = sY(s) − y(0), and for a derivative of order n, all initial values through order n − 1 appear. Thus, the conditions of the initial-value problem enter the transform before the algebraic equation is solved.',
+        'If y, …, y⁽ⁿ⁻¹⁾ are locally absolutely continuous, have right-hand initial values, and together with y⁽ⁿ⁾ have suitable exponential order, then L{y′} = sY(s) − y(0+), while a derivative of order n introduces y⁽ᵏ⁾(0+) for 0 ≤ k < n. Thus, the initial conditions enter the transform before the algebraic equation is solved.',
         'After transforming the equation, one finds Y(s), decomposes it into recognizable parts, and applies the inverse transform. For a system, the same process is carried out with several transforms or in matrix form.',
       ],
       terms: [

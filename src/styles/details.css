@@ -2,7 +2,7 @@
 .term-explorer__header { display: flex; align-items: center; gap: 8px; padding: 14px 17px; color: var(--violet); border-bottom: 1px solid var(--line); font-size: .66rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
 .term-explorer__tabs { display: flex; gap: 6px; padding: 13px 13px 0; overflow-x: auto; }
 .term-explorer__tabs button { min-height: 34px; padding: 0 12px; color: var(--ink-soft); white-space: nowrap; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); cursor: pointer; font-size: .68rem; }
-.term-explorer__tabs button.is-active { color: white; border-color: var(--violet); background: var(--violet); }
+.term-explorer__tabs button.is-active { color: white; border-color: var(--violet-solid); background: var(--violet-solid); }
 .term-explorer__definition { display: grid; min-height: 105px; grid-template-columns: 42px 1fr; align-items: center; gap: 15px; padding: 18px; }
 .term-explorer__definition > span { display: grid; width: 40px; height: 40px; place-items: center; color: var(--violet); border-radius: 11px; background: var(--violet-soft); font-family: var(--font-serif); font-size: .85rem; }
 .term-explorer__definition p { margin: 0; font-size: .82rem; line-height: 1.65; }
@@ -22,7 +22,7 @@
 .step-example__answer { display: grid; gap: 3px; margin: 0 21px 15px; padding: 12px 14px; color: var(--green); border-radius: 10px; background: var(--green-soft); }
 .step-example__answer span { font-size: .58rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
 .step-example__answer strong { color: var(--ink); font-size: .8rem; }
-.step-example > button { display: flex; min-height: 40px; align-items: center; gap: 7px; margin: 0 21px 20px auto; padding: 0 13px; color: white; border: 0; border-radius: 999px; background: var(--blue); cursor: pointer; font-size: .68rem; font-weight: 800; }
+.step-example > button { display: flex; min-height: 40px; align-items: center; gap: 7px; margin: 0 21px 20px auto; padding: 0 13px; color: white; border: 0; border-radius: 999px; background: var(--blue-solid); cursor: pointer; font-size: .68rem; font-weight: 800; }
 
 @media (max-width: 640px) {
   .term-explorer__definition { grid-template-columns: 1fr; }

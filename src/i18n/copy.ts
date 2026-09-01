@@ -4,7 +4,7 @@ export const copies = {
     header: {
       catalog: 'Оглавление', calculus: 'Мат. анализ', labs: 'Лаборатории', search: 'Найти тему',
       completed: 'Завершённые параграфы', dark: 'Включить тёмную тему', light: 'Включить светлую тему',
-      menu: 'Открыть меню', home: 'Континуум — на главную', language: 'Язык', mainNav: 'Основная навигация', mobileNav: 'Мобильная навигация', chapterFive: 'Глава V · Анализ', searchShort: 'Поиск',
+      menu: 'Открыть меню', closeMenu: 'Закрыть меню', home: 'Континуум — на главную', language: 'Язык', mainNav: 'Основная навигация', mobileNav: 'Мобильная навигация', chapterFive: 'Глава V · Анализ', searchShort: 'Поиск',
     },
     search: {
       dialog: 'Поиск по книге', placeholder: 'Матрицы, предел, формула Стокса…', frequent: 'Часто открывают',
@@ -12,7 +12,7 @@ export const copies = {
       choose: 'выбрать', close: 'закрыть', closeButton: 'Закрыть поиск', chapter: 'Глава',
     },
     sidebar: {
-      search: 'Поиск по книге', scope: '18 глав · 80 параграфов', completed: 'пройдено', overview: 'Обзор главы', nav: 'Оглавление книги',
+      search: 'Поиск по книге', scope: '18 глав · 80 параграфов', completed: 'пройдено', overview: 'Обзор главы', nav: 'Оглавление книги', close: 'Закрыть оглавление',
     },
     home: {
       badge: 'Интерактивный учебник · 2026', titleA: 'Высшая математика.', titleB: 'Увидеть', titleC: ', а не заучить.',
@@ -49,7 +49,7 @@ export const copies = {
       after: 'После этой главы', route: 'Маршрут главы', paragraphs: 'Параграфы', blocks: 'учебных блоков', blockOne: 'учебный блок', whole: 'Цельный теоретический параграф',
     },
     lesson: {
-      toc: 'Оглавление', book: 'Книга', chapter: 'Глава', bookmark: 'Добавить в закладки', copy: 'Скопировать ссылку',
+      toc: 'Оглавление', book: 'Книга', chapter: 'Глава', bookmark: 'Добавить в закладки', removeBookmark: 'Убрать из закладок', copy: 'Скопировать ссылку', copied: 'Ссылка скопирована', copyFailed: 'Не удалось скопировать ссылку',
       minutes: 'минут', base: 'База', middle: 'Средний', advanced: 'Продвинутый', blocks: 'блоков', blockOne: 'блок',
       goalsFallback: ['объяснять центральную идею параграфа', 'применять основной результат в типовой задаче', 'распознавать условия применимости метода'],
       explainTopic: 'объяснять тему', why: 'Зачем это нужно', unpack: 'Разберём идею', oneLine: 'Смысл в одной строке',
@@ -69,8 +69,8 @@ export const copies = {
     },
     labs: {
       lab: 'Лаборатория', reset: 'Сбросить', matrixTitle: 'Потрогай линейное преобразование', identity: 'Единичная', shear: 'Сдвиг', rotation: 'Поворот', reflection: 'Отражение',
-      determinant: 'det A', area: 'Площадь', orientation: 'Ориентация', collapsed: 'сжата', preserved: 'сохранена', reversed: 'сменена',
-      matrixHint: 'Меняй элементы матрицы. Модуль определителя показывает, во сколько раз изменилась площадь; знак замечает отражение.', matrixInput: 'Матрица два на два',
+      determinant: 'det A', area: 'Площадь', orientation: 'Ориентация', collapsed: 'вырождена', nearCollapsed: 'почти вырождена', preserved: 'сохранена', reversed: 'сменена', invalid: 'Введите число от −2 до 2',
+      matrixHint: 'Меняй элементы матрицы. Модуль определителя показывает масштаб площади, а знак — сохраняется или меняется ориентация.', matrixInput: 'Матрица два на два',
       derivativeTitle: 'Приблизь секущую к касательной', secant: 'секущая', tangent: 'касательная', point: 'Точка', step: 'Шаг', secantSlope: 'Наклон секущей', derivative: 'Производная', error: 'Ошибка',
       derivativeHint: 'Уменьшай h: вторая точка приближается к первой, а наклон секущей — к производной.',
       riemannTitle: 'Собери площадь из прямоугольников', rectangles: 'Количество прямоугольников', sum: 'Сумма', exact: 'Точное значение',
@@ -84,7 +84,7 @@ export const copies = {
     header: {
       catalog: 'Contents', calculus: 'Calculus', labs: 'Labs', search: 'Find a topic',
       completed: 'Completed sections', dark: 'Switch to dark theme', light: 'Switch to light theme',
-      menu: 'Open menu', home: 'Continuum — home', language: 'Language', mainNav: 'Main navigation', mobileNav: 'Mobile navigation', chapterFive: 'Chapter V · Calculus', searchShort: 'Search',
+      menu: 'Open menu', closeMenu: 'Close menu', home: 'Continuum — home', language: 'Language', mainNav: 'Main navigation', mobileNav: 'Mobile navigation', chapterFive: 'Chapter V · Calculus', searchShort: 'Search',
     },
     search: {
       dialog: 'Search the book', placeholder: 'Matrices, limits, Stokes’ theorem…', frequent: 'Popular topics',
@@ -92,7 +92,7 @@ export const copies = {
       choose: 'select', close: 'close', closeButton: 'Close search', chapter: 'Chapter',
     },
     sidebar: {
-      search: 'Search the book', scope: '18 chapters · 80 sections', completed: 'completed', overview: 'Chapter overview', nav: 'Book contents',
+      search: 'Search the book', scope: '18 chapters · 80 sections', completed: 'completed', overview: 'Chapter overview', nav: 'Book contents', close: 'Close contents',
     },
     home: {
       badge: 'Interactive textbook · 2026', titleA: 'Higher mathematics.', titleB: 'See it', titleC: ', don’t memorize it.',
@@ -129,7 +129,7 @@ export const copies = {
       after: 'After this chapter', route: 'Chapter route', paragraphs: 'Sections', blocks: 'learning blocks', blockOne: 'learning block', whole: 'One continuous theoretical section',
     },
     lesson: {
-      toc: 'Contents', book: 'Book', chapter: 'Chapter', bookmark: 'Add bookmark', copy: 'Copy link',
+      toc: 'Contents', book: 'Book', chapter: 'Chapter', bookmark: 'Add bookmark', removeBookmark: 'Remove bookmark', copy: 'Copy link', copied: 'Link copied', copyFailed: 'Could not copy link',
       minutes: 'minutes', base: 'Foundation', middle: 'Intermediate', advanced: 'Advanced', blocks: 'blocks', blockOne: 'block',
       goalsFallback: ['explain the central idea of the section', 'apply its main result to a standard problem', 'recognize when the method is valid'],
       explainTopic: 'explain', why: 'Why it matters', unpack: 'Unpack the idea', oneLine: 'The idea in one line',
@@ -149,8 +149,8 @@ export const copies = {
     },
     labs: {
       lab: 'Laboratory', reset: 'Reset', matrixTitle: 'Explore a linear transformation', identity: 'Identity', shear: 'Shear', rotation: 'Rotation', reflection: 'Reflection',
-      determinant: 'det A', area: 'Area', orientation: 'Orientation', collapsed: 'collapsed', preserved: 'preserved', reversed: 'reversed',
-      matrixHint: 'Change the matrix entries. The absolute determinant is the area scale factor; its sign detects a reflection.', matrixInput: 'Two by two matrix',
+      determinant: 'det A', area: 'Area', orientation: 'Orientation', collapsed: 'collapsed', nearCollapsed: 'nearly singular', preserved: 'preserved', reversed: 'reversed', invalid: 'Enter a number from −2 to 2',
+      matrixHint: 'Change the matrix entries. The absolute determinant is the area scale factor; its sign shows whether orientation is preserved or reversed.', matrixInput: 'Two by two matrix',
       derivativeTitle: 'Move the secant toward the tangent', secant: 'secant', tangent: 'tangent', point: 'Point', step: 'Step', secantSlope: 'Secant slope', derivative: 'Derivative', error: 'Error',
       derivativeHint: 'Decrease h: the second point approaches the first, and the secant slope approaches the derivative.',
       riemannTitle: 'Build area from rectangles', rectangles: 'Number of rectangles', sum: 'Sum', exact: 'Exact value',

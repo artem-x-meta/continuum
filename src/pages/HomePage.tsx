@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { ArrowRight, BookOpen, Braces, CheckCircle2, Download, FlaskConical, Network, Sparkles } from 'lucide-react';
 import { routeHref } from '../routing';
 import { HeroVisual } from '../components/HeroVisual';
@@ -22,10 +22,22 @@ type HomePageProps = {
 export function HomePage({ completed }: HomePageProps) {
   const { copy, bookStats, chapters, chapterMeta, tracks } = useLocale();
   const c = copy.home;
+  const labTabsId = useId();
   const labTabs = labComponents.map((lab, index) => ({ ...lab, label: c.labTabs[index][0], note: c.labTabs[index][1] }));
   const [activeLab, setActiveLab] = useState<(typeof labComponents)[number]['id']>('matrix');
-  const ActiveLab = labTabs.find((lab) => lab.id === activeLab)!.component;
   const continueSection = chapters.flatMap((chapter) => chapter.sections).find((section) => !completed.has(section.number)) ?? chapters[0].sections[0];
+  const activateLabFromKeyboard = (event: ReactKeyboardEvent<HTMLButtonElement>, index: number) => {
+    let next = index;
+    if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = (index + 1) % labTabs.length;
+    else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = (index - 1 + labTabs.length) % labTabs.length;
+    else if (event.key === 'Home') next = 0;
+    else if (event.key === 'End') next = labTabs.length - 1;
+    else return;
+    event.preventDefault();
+    setActiveLab(labTabs[next].id);
+    const tabs = event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="tab"]');
+    tabs?.[next]?.focus();
+  };
 
   return (
     <main>
@@ -64,12 +76,17 @@ export function HomePage({ completed }: HomePageProps) {
         </div>
         <div className="lab-tabs" role="tablist" aria-label={c.labChoice}>
           {labTabs.map((lab, index) => (
-            <button key={lab.id} type="button" className={activeLab === lab.id ? 'is-active' : ''} onClick={() => setActiveLab(lab.id)} role="tab" aria-selected={activeLab === lab.id}>
+            <button key={lab.id} id={`${labTabsId}-tab-${lab.id}`} type="button" className={activeLab === lab.id ? 'is-active' : ''} onClick={() => setActiveLab(lab.id)} onKeyDown={(event) => activateLabFromKeyboard(event, index)} role="tab" aria-selected={activeLab === lab.id} aria-controls={`${labTabsId}-panel-${lab.id}`} tabIndex={activeLab === lab.id ? 0 : -1}>
               <span>0{index + 1}</span><strong>{lab.label}</strong><small>{lab.note}</small>
             </button>
           ))}
         </div>
-        <div className="showcase-lab"><ActiveLab /></div>
+        <div className="showcase-lab">
+          {labTabs.map((lab) => {
+            const Lab = lab.component;
+            return <div key={lab.id} id={`${labTabsId}-panel-${lab.id}`} role="tabpanel" aria-labelledby={`${labTabsId}-tab-${lab.id}`} hidden={activeLab !== lab.id}><Lab /></div>;
+          })}
+        </div>
       </section>
 
       <section className="roadmap-section section-space">
