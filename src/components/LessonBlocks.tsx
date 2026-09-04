@@ -135,7 +135,7 @@ export function StepExample({ example }: { example: LessonDetail['example'] }) {
     <section className="step-example">
       <header><span>{c.steps}</span><h3>{example.title}</h3></header>
       <div className="step-example__problem"><strong>{c.problem}</strong><p><RichText>{example.problem}</RichText></p></div>
-      <ol>
+      <ol aria-live="polite">
         {example.steps.map((step, index) => (
           <li key={index} className={index < visibleSteps ? 'is-visible' : ''}>
             <span>{index < visibleSteps ? <Check size={15} /> : index + 1}</span>

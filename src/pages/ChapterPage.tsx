@@ -57,7 +57,6 @@ export function ChapterPage({ chapterNumber, completed, onOpenSearch, sidebarOpe
           <div className="section-card-list">
             {chapter.sections.map((section, index) => (
               <a key={section.number} className={completed.has(section.number) ? 'is-complete' : ''} href={routeHref({ page: 'section', section: section.number })}>
-                <span className="section-card__index">{String(index + 1).padStart(2, '0')}</span>
                 <span className="section-card__copy">
                   <small>§ {section.number} · {section.topics.length || 1} {plural(section.topics.length || 1, c.blockForms, language)}</small>
                   <strong>{section.title}</strong>

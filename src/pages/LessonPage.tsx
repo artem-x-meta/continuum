@@ -229,7 +229,7 @@ export function LessonPage({
           </div>
 
           <footer className="lesson-finish">
-            <div><span className="eyebrow">{c.finish}</span><h2>{complete ? c.finishDone : c.finishQuestion}</h2><p>{c.localProgress}</p></div>
+            <div><h2>{complete ? c.finishDone : c.finishQuestion}</h2><p>{c.localProgress}</p></div>
             <button type="button" className={complete ? 'is-complete' : ''} onClick={() => onToggleComplete(section.number)} aria-pressed={complete}>{complete ? <><Check size={19} /> {c.done}</> : c.complete}</button>
           </footer>
 

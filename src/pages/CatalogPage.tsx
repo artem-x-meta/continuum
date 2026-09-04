@@ -47,7 +47,7 @@ export function CatalogPage({ completed, bookmarks }: CatalogPageProps) {
       <header className="catalog-hero">
         <span className="eyebrow">{c.kicker}</span>
         <h1 style={{ whiteSpace: 'pre-line' }}>{c.title}</h1>
-        <p>{bookStats.chapters} {c.introA} {bookStats.sections} {c.introB} {bookStats.topics} {c.introC}</p>
+        <p>{c.intro}</p>
         <div className="catalog-stats">
           <div><strong>{bookStats.chapters}</strong><span>{c.chapters}</span></div>
           <div><strong>{bookStats.sections}</strong><span>{c.sections}</span></div>

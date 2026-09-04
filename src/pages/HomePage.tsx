@@ -25,7 +25,12 @@ export function HomePage({ completed }: HomePageProps) {
   const labTabsId = useId();
   const labTabs = labComponents.map((lab, index) => ({ ...lab, label: c.labTabs[index][0], note: c.labTabs[index][1] }));
   const [activeLab, setActiveLab] = useState<(typeof labComponents)[number]['id']>('matrix');
+  const [mountedLabs, setMountedLabs] = useState<Set<string>>(() => new Set(['matrix']));
   const continueSection = chapters.flatMap((chapter) => chapter.sections).find((section) => !completed.has(section.number)) ?? chapters[0].sections[0];
+  const selectLab = (id: (typeof labComponents)[number]['id']) => {
+    setActiveLab(id);
+    setMountedLabs((current) => current.has(id) ? current : new Set(current).add(id));
+  };
   const activateLabFromKeyboard = (event: ReactKeyboardEvent<HTMLButtonElement>, index: number) => {
     let next = index;
     if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = (index + 1) % labTabs.length;
@@ -34,7 +39,7 @@ export function HomePage({ completed }: HomePageProps) {
     else if (event.key === 'End') next = labTabs.length - 1;
     else return;
     event.preventDefault();
-    setActiveLab(labTabs[next].id);
+    selectLab(labTabs[next].id);
     const tabs = event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="tab"]');
     tabs?.[next]?.focus();
   };
@@ -76,7 +81,7 @@ export function HomePage({ completed }: HomePageProps) {
         </div>
         <div className="lab-tabs" role="tablist" aria-label={c.labChoice}>
           {labTabs.map((lab, index) => (
-            <button key={lab.id} id={`${labTabsId}-tab-${lab.id}`} type="button" className={activeLab === lab.id ? 'is-active' : ''} onClick={() => setActiveLab(lab.id)} onKeyDown={(event) => activateLabFromKeyboard(event, index)} role="tab" aria-selected={activeLab === lab.id} aria-controls={`${labTabsId}-panel-${lab.id}`} tabIndex={activeLab === lab.id ? 0 : -1}>
+            <button key={lab.id} id={`${labTabsId}-tab-${lab.id}`} type="button" className={activeLab === lab.id ? 'is-active' : ''} onClick={() => selectLab(lab.id)} onKeyDown={(event) => activateLabFromKeyboard(event, index)} role="tab" aria-selected={activeLab === lab.id} aria-controls={`${labTabsId}-panel-${lab.id}`} tabIndex={activeLab === lab.id ? 0 : -1}>
               <span>0{index + 1}</span><strong>{lab.label}</strong><small>{lab.note}</small>
             </button>
           ))}
@@ -84,7 +89,14 @@ export function HomePage({ completed }: HomePageProps) {
         <div className="showcase-lab">
           {labTabs.map((lab) => {
             const Lab = lab.component;
-            return <div key={lab.id} id={`${labTabsId}-panel-${lab.id}`} role="tabpanel" aria-labelledby={`${labTabsId}-tab-${lab.id}`} hidden={activeLab !== lab.id}><Lab /></div>;
+            const isActive = activeLab === lab.id;
+            // Монтируем панель только после первого показа: иначе главная сразу
+            // строит четыре SVG-лаборатории, из которых видна одна.
+            return (
+              <div key={lab.id} id={`${labTabsId}-panel-${lab.id}`} role="tabpanel" aria-labelledby={`${labTabsId}-tab-${lab.id}`} hidden={!isActive}>
+                {(isActive || mountedLabs.has(lab.id)) && <Lab />}
+              </div>
+            );
           })}
         </div>
       </section>
