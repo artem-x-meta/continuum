@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ComponentType } from 'react'
 import { ArrowLeft, ArrowRight, Bookmark, Check, Copy, Lightbulb, Menu, Network } from 'lucide-react';
 import { BookSidebar } from '../components/BookSidebar';
 import { Math } from '../components/Math';
+import { RichText } from '../components/RichText';
 import { ConceptCard, Reveal, StepExample, TermExplorer } from '../components/LessonBlocks';
 import { getRelatedSectionNumbers } from '../data/relations';
 import { routeHref } from '../routing';
@@ -98,10 +99,10 @@ function GenericLesson({ sectionNumber }: { sectionNumber: number }) {
       {Lab && <Lab />}
       <section id="idea">
         <h2>{c.why}</h2>
-        <p>{detail.hook}</p>
+        <p><RichText>{detail.hook}</RichText></p>
         <h3>{c.unpack}</h3>
-        {detail.explanation.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-        <ConceptCard title={c.oneLine} type="idea"><p>{guide.keyIdea}</p></ConceptCard>
+        {detail.explanation.map((paragraph) => <p key={paragraph}><RichText>{paragraph}</RichText></p>)}
+        <ConceptCard title={c.oneLine} type="idea"><p><RichText>{guide.keyIdea}</RichText></p></ConceptCard>
       </section>
       <section id="formula">
         <h2>{c.formula}</h2>
@@ -126,16 +127,16 @@ function GenericLesson({ sectionNumber }: { sectionNumber: number }) {
         <h2>{c.solution}</h2>
         <StepExample example={detail.example} />
       </section>
-      <ConceptCard title={c.mistake} type="mistake"><p>{detail.pitfall}</p></ConceptCard>
+      <ConceptCard title={c.mistake} type="mistake"><p><RichText>{detail.pitfall}</RichText></p></ConceptCard>
       <section id="check">
         <h2>{c.selfCheck}</h2>
-        <div className="open-question"><Lightbulb size={21} /><strong>{guide.question}</strong></div>
-        <Reveal label={c.answerGuide}><p>{guide.keyIdea}</p><p>{c.answerGuideText}</p></Reveal>
+        <div className="open-question"><Lightbulb size={21} /><strong><RichText>{guide.question}</RichText></strong></div>
+        <Reveal label={c.answerGuide}><p><RichText>{guide.keyIdea}</RichText></p><p>{c.answerGuideText}</p></Reveal>
       </section>
       <section id="practice">
         <h2>{c.practice}</h2>
-        <div className="open-question"><Lightbulb size={21} /><strong>{detail.practice.question}</strong></div>
-        <Reveal label={c.showSolution}><p>{detail.practice.answer}</p></Reveal>
+        <div className="open-question"><Lightbulb size={21} /><strong><RichText>{detail.practice.question}</RichText></strong></div>
+        <Reveal label={c.showSolution}><p><RichText>{detail.practice.answer}</RichText></p></Reveal>
       </section>
       <section id="connections">
         <h2>{c.connections}</h2>
@@ -219,7 +220,7 @@ export function LessonPage({
             <div className="breadcrumbs"><a href={routeHref({ page: 'catalog' })}>{c.book}</a><span>/</span><a href={routeHref({ page: 'chapter', chapter: chapter.number })}>{c.chapter} {chapter.roman}</a><span>/</span><span>§ {section.number}</span></div>
             <div className="lesson-header__topline"><span className="eyebrow">§ {section.number} · {meta.shortTitle}</span><div><button type="button" className={bookmarked ? 'is-active' : ''} onClick={() => onToggleBookmark(section.number)} aria-label={bookmarked ? c.removeBookmark : c.bookmark} aria-pressed={bookmarked}><Bookmark size={18} fill={bookmarked ? 'currentColor' : 'none'} /></button><button type="button" onClick={copyLink} aria-label={copied ? c.copied : copyFailed ? c.copyFailed : c.copy}>{copied ? <Check size={18} /> : <Copy size={18} />}</button><span className="sr-only" role="status" aria-live="polite">{copied ? c.copied : copyFailed ? c.copyFailed : ''}</span></div></div>
             <h1>{section.title}</h1>
-            <p>{guide?.summary}</p>
+            <p>{guide?.summary ? <RichText>{guide.summary}</RichText> : null}</p>
             {topicCount > 0 && <div className="lesson-meta"><span>{topicCount} {plural(topicCount, c.topicForms, language)}</span></div>}
           </header>
 

@@ -2,6 +2,7 @@ import { useId, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNo
 import { AlertTriangle, Brain, Check, ChevronDown, ChevronRight, ChevronUp, Lightbulb, RotateCcw, Target } from 'lucide-react';
 import type { LessonDetail } from '../data/lessonDetailTypes';
 import { useLocale } from '../i18n/LocaleContext';
+import { RichText } from './RichText';
 
 export function LearningGoals({ items }: { items: string[] }) {
   const { copy } = useLocale();
@@ -119,7 +120,7 @@ export function TermExplorer({ terms }: { terms: LessonDetail['terms'] }) {
       </div>
       <div id={`${id}-panel`} className="term-explorer__definition" role="tabpanel" aria-labelledby={`${id}-tab-${active}`} tabIndex={0}>
         <span>{String(active + 1).padStart(2, '0')}</span>
-        <p>{terms[active]?.definition}</p>
+        <p><RichText>{terms[active]?.definition ?? ''}</RichText></p>
       </div>
     </section>
   );
@@ -133,16 +134,16 @@ export function StepExample({ example }: { example: LessonDetail['example'] }) {
   return (
     <section className="step-example">
       <header><span>{c.steps}</span><h3>{example.title}</h3></header>
-      <div className="step-example__problem"><strong>{c.problem}</strong><p>{example.problem}</p></div>
+      <div className="step-example__problem"><strong>{c.problem}</strong><p><RichText>{example.problem}</RichText></p></div>
       <ol>
         {example.steps.map((step, index) => (
           <li key={index} className={index < visibleSteps ? 'is-visible' : ''}>
             <span>{index < visibleSteps ? <Check size={15} /> : index + 1}</span>
-            <p>{index < visibleSteps ? step : c.hidden}</p>
+            <p>{index < visibleSteps ? <RichText>{step}</RichText> : c.hidden}</p>
           </li>
         ))}
       </ol>
-      {complete && <div className="step-example__answer"><span>{c.answer}</span><strong>{example.answer}</strong></div>}
+      {complete && <div className="step-example__answer"><span>{c.answer}</span><strong><RichText>{example.answer}</RichText></strong></div>}
       <button type="button" onClick={() => setVisibleSteps(complete ? 0 : visibleSteps + 1)}>
         {complete ? <><RotateCcw size={16} /> {c.restart}</> : <>{visibleSteps ? c.showNext : c.showFirst} <ChevronRight size={16} /></>}
       </button>

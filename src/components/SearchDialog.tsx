@@ -72,8 +72,16 @@ export function stemToken(token: string, language: Language) {
   return token;
 }
 
+/**
+ * Формулы в прозе размечены парными «$». В индекс их содержимое не берём:
+ * иначе запрос «begin» совпал бы с каждым параграфом, где есть матрица.
+ */
+export function stripMathSpans(value: string) {
+  return value.replace(/\$[^$]*\$/g, ' ');
+}
+
 export function stemSearchText(value: string, language: Language) {
-  return normalizeSearchText(value, language)
+  return normalizeSearchText(stripMathSpans(value), language)
     .split(' ')
     .filter(Boolean)
     .map((token) => stemToken(token, language))

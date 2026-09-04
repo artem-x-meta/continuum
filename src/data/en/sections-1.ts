@@ -24,18 +24,18 @@ export const englishSections1: Record<number, EnglishSectionBundle> = {
       ],
       example: {
         title: 'Product of Two 2×2 Matrices',
-        problem: 'Compute AB for A = [[1, 2], [−1, 3]] and B = [[2, 0], [1, 4]].',
+        problem: 'Compute AB for A = $\\begin{pmatrix} 1 & 2 \\\\ -1 & 3 \\end{pmatrix}$ and B = $\\begin{pmatrix} 2 & 0 \\\\ 1 & 4 \\end{pmatrix}$.',
         steps: [
           'The first row of A and the first column of B give 1·2 + 2·1 = 4; with the second column, they give 1·0 + 2·4 = 8.',
           'The second row of A and the first column of B give −1·2 + 3·1 = 1; with the second column, they give −1·0 + 3·4 = 12.',
           'Place the four results in the rows and columns for which they were computed.',
         ],
-        answer: 'AB = [[4, 8], [1, 12]].',
+        answer: 'AB = $\\begin{pmatrix} 4 & 8 \\\\ 1 & 12 \\end{pmatrix}$.',
       },
       pitfall: 'A common mistake is to multiply corresponding entries instead of multiplying a row by a column. Before calculating, write down the dimensions of the result and explicitly select the required row and column for each of its entries.',
       practice: {
-        question: 'Find A + B if A = [[2, −1], [0, 3]] and B = [[1, 4], [5, −2]].',
-        answer: 'A + B = [[3, 3], [5, 1]].',
+        question: 'Find A + B if A = $\\begin{pmatrix} 2 & -1 \\\\ 0 & 3 \\end{pmatrix}$ and B = $\\begin{pmatrix} 1 & 4 \\\\ 5 & -2 \\end{pmatrix}$.',
+        answer: 'A + B = $\\begin{pmatrix} 3 & 3 \\\\ 5 & 1 \\end{pmatrix}$.',
       },
     },
   },
@@ -61,7 +61,7 @@ export const englishSections1: Record<number, EnglishSectionBundle> = {
       ],
       example: {
         title: 'Expansion Along a Convenient Row',
-        problem: 'Find the determinant of [[1, 2, 0], [3, −1, 1], [2, 0, 4]].',
+        problem: 'Find the determinant of $\\begin{pmatrix} 1 & 2 & 0 \\\\ 3 & -1 & 1 \\\\ 2 & 0 & 4 \\end{pmatrix}$.',
         steps: [
           'Expand along the first row: the third term vanishes because its coefficient is zero.',
           'The first minor is (−1)·4 − 1·0 = −4.',
@@ -72,7 +72,7 @@ export const englishSections1: Record<number, EnglishSectionBundle> = {
       },
       pitfall: 'When expanding a determinant, it is easy to forget the checkerboard pattern of signs +, −, +. Write the factor (−1)ⁱ⁺ʲ before computing each minor, especially when expanding along a row other than the first.',
       practice: {
-        question: 'Compute the determinant of [[4, −2], [3, 5]].',
+        question: 'Compute the determinant of $\\begin{pmatrix} 4 & -2 \\\\ 3 & 5 \\end{pmatrix}$.',
         answer: 'det A = 4·5 − (−2)·3 = 26.',
       },
     },
@@ -100,18 +100,18 @@ export const englishSections1: Record<number, EnglishSectionBundle> = {
       ],
       example: {
         title: 'Inverse of a 2×2 Matrix',
-        problem: 'Find the inverse of A = [[2, 1], [5, 3]].',
+        problem: 'Find the inverse of A = $\\begin{pmatrix} 2 & 1 \\\\ 5 & 3 \\end{pmatrix}$.',
         steps: [
           'Compute det A = 2·3 − 1·5 = 1, so the matrix is nonsingular.',
-          'Interchange the diagonal entries and change the signs of the off-diagonal entries: [[3, −1], [−5, 2]].',
+          'Interchange the diagonal entries and change the signs of the off-diagonal entries: $\\begin{pmatrix} 3 & -1 \\\\ -5 & 2 \\end{pmatrix}$.',
           'Divide the resulting matrix by det A = 1.',
-          'A multiplication check gives AA⁻¹ = [[1, 0], [0, 1]].',
+          'A multiplication check gives AA⁻¹ = $\\begin{pmatrix} 1 & 0 \\\\ 0 & 1 \\end{pmatrix}$.',
         ],
-        answer: 'A⁻¹ = [[3, −1], [−5, 2]].',
+        answer: 'A⁻¹ = $\\begin{pmatrix} 3 & -1 \\\\ -5 & 2 \\end{pmatrix}$.',
       },
       pitfall: 'Do not apply the inverse-matrix formula without first checking the determinant. If det A = 0, division by it is invalid and the inverse matrix does not exist.',
       practice: {
-        question: 'Find the rank of [[1, 2], [2, 4]].',
+        question: 'Find the rank of $\\begin{pmatrix} 1 & 2 \\\\ 2 & 4 \\end{pmatrix}$.',
         answer: 'The rank is 1: the second row is twice the first, but the matrix is not the zero matrix.',
       },
     },
