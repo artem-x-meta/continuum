@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   buildSectionSearchText,
   matchesSearchText,
+  matchSnippet,
   normalizeSearchText,
   stemSearchText,
   stemToken,
@@ -124,5 +125,30 @@ describe('русская морфология в поиске', () => {
     expect(matchesSearchText(text, 'derivatives', 'en')).toBe(true);
     expect(matchesSearchText(text, 'functions', 'en')).toBe(true);
     expect(stemToken('class', 'en')).toBe('class');
+  });
+});
+
+describe('фрагмент совпадения', () => {
+  const plain = 'Скалярное произведение двух векторов равно произведению их длин на косинус угла между ними. Оно позволяет находить углы, ортогональные проекции и работу постоянной силы.';
+
+  it('показывает окрестность совпадения и обрезает края многоточием', () => {
+    const snippet = matchSnippet(plain, 'ортогональные', 'ru');
+    expect(snippet).toContain('ортогональные проекции');
+    expect(snippet.startsWith('…')).toBe(true);
+    expect(snippet.length).toBeLessThan(plain.length);
+  });
+
+  it('находит совпадение по другой форме слова', () => {
+    expect(matchSnippet(plain, 'вектор', 'ru')).toContain('векторов');
+    expect(matchSnippet(plain, 'векторами', 'ru')).toContain('векторов');
+  });
+
+  it('не начинается с многоточия, когда совпадение в начале', () => {
+    expect(matchSnippet(plain, 'скалярное', 'ru').startsWith('…')).toBe(false);
+  });
+
+  it('возвращает пустую строку без запроса и без совпадения', () => {
+    expect(matchSnippet(plain, '', 'ru')).toBe('');
+    expect(matchSnippet(plain, 'интеграл', 'ru')).toBe('');
   });
 });

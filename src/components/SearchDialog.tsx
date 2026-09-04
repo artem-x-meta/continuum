@@ -24,6 +24,8 @@ type SearchEntry = SectionSearchSource & {
   text: string;
   headingText: string;
   sectionText: string;
+  /** Читаемый текст параграфа — из него берётся фрагмент с совпадением. */
+  plain: string;
 };
 
 const frequentSections = [1, 4, 16, 20, 29, 35, 48, 66];
@@ -142,6 +144,23 @@ export function matchesSearchText(searchText: string, query: string, language: L
   return tokens.length === 0 || tokens.every((token) => searchText.includes(token));
 }
 
+/**
+ * Фрагмент, объясняющий, почему параграф попал в выдачу. Раньше результат
+ * показывал только название, и совпадение в глубине разбора выглядело
+ * необъяснимым.
+ */
+export function matchSnippet(plain: string, query: string, language: Language, radius = 60) {
+  const token = stemSearchText(query, language).split(' ').filter(Boolean)[0];
+  if (!token) return '';
+  const haystack = normalizeSearchText(plain, language);
+  const at = haystack.indexOf(token);
+  if (at < 0) return '';
+  const from = Math.max(0, plain.lastIndexOf(' ', Math.max(0, at - radius)) + 1);
+  const to = plain.indexOf(' ', Math.min(plain.length, at + token.length + radius));
+  const cut = plain.slice(from, to < 0 ? plain.length : to).trim();
+  return `${from > 0 ? '…' : ''}${cut}${to > 0 && to < plain.length ? '…' : ''}`;
+}
+
 export function SearchDialog({ open, onClose }: SearchDialogProps) {
   const { language, copy, chapters, chapterMeta, sectionGuides, lessonDetails } = useLocale();
   const c = copy.search;
@@ -174,6 +193,7 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
         ...section.topics.flatMap((topic) => [topic.number, topic.title]),
       ].join(' '), language),
       sectionText: stemSearchText(sectionContentParts(section, source.guide, source.detail).join(' '), language),
+      plain: stripMathSpans([source.guide.summary, source.detail.hook, ...source.detail.explanation, source.detail.pitfall].join(' ')).replace(/\s+/g, ' ').trim(),
     };
   })), [chapterMeta, chapters, language, lessonDetails, sectionGuides]);
 
@@ -346,8 +366,9 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
           role="listbox"
           aria-label={c.dialog}
         >
-          {results.map(({ chapter, section }, index) => {
+          {results.map(({ chapter, section, plain }, index) => {
             const optionId = `book-search-option-${section.number}`;
+            const snippet = matchSnippet(plain, query, language);
             return (
               <a
                 id={optionId}
@@ -369,6 +390,7 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
                 <span>
                   <small>{c.chapter} {chapter.roman} · § {section.number}</small>
                   <strong>{section.title}</strong>
+                  {snippet && <em className="search-result__snippet">{snippet}</em>}
                 </span>
                 <ArrowRight size={18} aria-hidden="true" />
               </a>
