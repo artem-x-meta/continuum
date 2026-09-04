@@ -75,7 +75,7 @@ export function DerivativeLab() {
         </label>
       </div>
 
-      <div className="lab-readout lab-readout--wide">
+      <div className="lab-readout lab-readout--wide" aria-live="polite" aria-atomic="true">
         <div><span>{c.secantSlope}</span><strong>{slope.toFixed(3)}</strong></div>
         <div><span>{c.derivative} f′(x₀)</span><strong>{tangent.toFixed(3)}</strong></div>
         <div><span>{c.error}</span><strong>{Math.abs(slope - tangent).toFixed(3)}</strong></div>

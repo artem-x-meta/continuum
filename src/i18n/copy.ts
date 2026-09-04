@@ -7,9 +7,9 @@ export const copies = {
       menu: 'Открыть меню', closeMenu: 'Закрыть меню', home: 'Континуум — на главную', language: 'Язык', mainNav: 'Основная навигация', mobileNav: 'Мобильная навигация', chapterFive: 'Глава V · Анализ', searchShort: 'Поиск',
     },
     search: {
-      dialog: 'Поиск по книге', placeholder: 'Матрицы, предел, формула Стокса…', frequent: 'Часто открывают',
+      dialog: 'Поиск по книге', placeholder: 'Матрицы, предел, формула Стокса…', frequent: 'С чего начать',
       found: 'Найдено', emptyTitle: 'Тема пока не нашлась', emptyBody: 'Попробуй номер параграфа или более короткий запрос.',
-      choose: 'выбрать', close: 'закрыть', closeButton: 'Закрыть поиск', chapter: 'Глава',
+      choose: 'выбрать', close: 'закрыть', closeButton: 'Закрыть поиск', chapter: 'Глава', showingFirst: 'показаны первые',
     },
     sidebar: {
       search: 'Поиск по книге', scope: '18 глав · 80 параграфов', completed: 'пройдено', overview: 'Обзор главы', nav: 'Оглавление книги', close: 'Закрыть оглавление',
@@ -38,9 +38,14 @@ export const copies = {
       finalKicker: 'Готов начать?', finalTitle: 'Первая глава уже открыта.', finalText: 'Никакой регистрации. Прогресс сохранится прямо в браузере.', finalButton: 'К матрицам',
     },
     heroVisual: { live: 'Живая модель', family: 'семейство кривых' },
+    labsPage: {
+      kicker: 'Четыре модели',
+      title: 'Лаборатории',
+      text: 'Матрица, касательная, интегральная сумма и ряд Фурье — здесь их можно покрутить целиком, не отвлекаясь на текст параграфа. Те же модели встроены в §\u00a01, §\u00a020, §\u00a035 и §\u00a066.',
+    },
     catalog: {
       kicker: 'Полное оглавление', title: 'Карта высшей\nматематики', introA: 'глав,', introB: 'параграфов и', introC: 'тем — от первых операций с матрицами до преобразования Лапласа.',
-      chapters: 'глав', sections: 'параграфов', topics: 'тем', completed: 'пройдено', filter: 'Фильтр по названию темы', all: 'Все части',
+      chapters: 'глав', sections: 'параграфов', topics: 'тем', completed: 'пройдено', filter: 'Поиск по книге: название, формула, разбор', filterGroup: 'Часть курса', all: 'Все части',
       bookmarks: 'Закладки', empty: 'Ничего не найдено. Попробуй убрать фильтр или сократить запрос.', chapter: 'Глава',
       topicForms: ['тема', 'темы', 'тем'], whole: 'цельный параграф',
     },
@@ -74,7 +79,7 @@ export const copies = {
       derivativeTitle: 'Приблизь секущую к касательной', secant: 'секущая', tangent: 'касательная', point: 'Точка', step: 'Шаг', secantSlope: 'Наклон секущей', derivative: 'Производная', error: 'Ошибка',
       derivativeHint: 'Уменьшай h: вторая точка приближается к первой, а наклон секущей — к производной.',
       riemannTitle: 'Собери площадь из прямоугольников', rectangles: 'Количество прямоугольников', sum: 'Сумма', exact: 'Точное значение',
-      riemannHint: 'Добавляй прямоугольники: ступенчатая фигура всё точнее повторяет область под графиком.',
+      riemannHint: 'Высота каждого прямоугольника берётся в середине его основания — это формула средних прямоугольников на отрезке [0, 4]. Добавляй прямоугольники: ступенчатая фигура всё точнее повторяет фигуру под графиком.',
       fourierTitle: 'Собери меандр из синусоид', odd: 'нечётные гармоники', target: 'цель', harmonics: 'Гармоник в сумме',
       fourierHint: 'Каждая новая нечётная частота делает фронт резче. Волны у скачка — эффект Гиббса, а не ошибка вычислений.',
     },
@@ -87,9 +92,9 @@ export const copies = {
       menu: 'Open menu', closeMenu: 'Close menu', home: 'Continuum — home', language: 'Language', mainNav: 'Main navigation', mobileNav: 'Mobile navigation', chapterFive: 'Chapter V · Calculus', searchShort: 'Search',
     },
     search: {
-      dialog: 'Search the book', placeholder: 'Matrices, limits, Stokes’ theorem…', frequent: 'Popular topics',
+      dialog: 'Search the book', placeholder: 'Matrices, limits, Stokes’ theorem…', frequent: 'Good places to start',
       found: 'Found', emptyTitle: 'No matching topic yet', emptyBody: 'Try a section number or a shorter query.',
-      choose: 'select', close: 'close', closeButton: 'Close search', chapter: 'Chapter',
+      choose: 'select', close: 'close', closeButton: 'Close search', chapter: 'Chapter', showingFirst: 'showing the first',
     },
     sidebar: {
       search: 'Search the book', scope: '18 chapters · 80 sections', completed: 'completed', overview: 'Chapter overview', nav: 'Book contents', close: 'Close contents',
@@ -118,9 +123,14 @@ export const copies = {
       finalKicker: 'Ready to begin?', finalTitle: 'The first chapter is open.', finalText: 'No registration. Your progress stays in this browser.', finalButton: 'Go to matrices',
     },
     heroVisual: { live: 'Live model', family: 'family of curves' },
+    labsPage: {
+      kicker: 'Four models',
+      title: 'Laboratories',
+      text: 'A matrix, a tangent line, a Riemann sum and a Fourier series — here you can work each one in full, away from the surrounding text. The same models are embedded in §\u00a01, §\u00a020, §\u00a035 and §\u00a066.',
+    },
     catalog: {
       kicker: 'Complete contents', title: 'A map of higher\nmathematics', introA: 'chapters,', introB: 'sections, and', introC: 'topics—from the first matrix operations to the Laplace transform.',
-      chapters: 'chapters', sections: 'sections', topics: 'topics', completed: 'completed', filter: 'Filter by topic title', all: 'All parts',
+      chapters: 'chapters', sections: 'sections', topics: 'topics', completed: 'completed', filter: 'Search the book: titles, formulas, worked examples', filterGroup: 'Course part', all: 'All parts',
       bookmarks: 'Bookmarks', empty: 'Nothing found. Clear a filter or shorten your query.', chapter: 'Chapter',
       topicForms: ['topic', 'topics', 'topics'], whole: 'single continuous section',
     },
@@ -154,7 +164,7 @@ export const copies = {
       derivativeTitle: 'Move the secant toward the tangent', secant: 'secant', tangent: 'tangent', point: 'Point', step: 'Step', secantSlope: 'Secant slope', derivative: 'Derivative', error: 'Error',
       derivativeHint: 'Decrease h: the second point approaches the first, and the secant slope approaches the derivative.',
       riemannTitle: 'Build area from rectangles', rectangles: 'Number of rectangles', sum: 'Sum', exact: 'Exact value',
-      riemannHint: 'Add rectangles: the staircase follows the region under the curve more and more closely.',
+      riemannHint: 'Each rectangle takes its height at the midpoint of its base — this is the midpoint rule on the interval [0, 4]. Add rectangles: the staircase follows the region under the curve more and more closely.',
       fourierTitle: 'Build a square wave from sines', odd: 'odd harmonics', target: 'target', harmonics: 'Harmonics in the sum',
       fourierHint: 'Each new odd frequency sharpens the edge. The ripples near the jump are the Gibbs phenomenon, not a numerical error.',
     },

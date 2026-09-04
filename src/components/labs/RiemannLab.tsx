@@ -54,7 +54,7 @@ export function RiemannLab() {
           <input type="range" min="2" max="36" step="1" value={n} onChange={(event) => setN(Number(event.target.value))} />
         </label>
       </div>
-      <div className="lab-readout lab-readout--wide">
+      <div className="lab-readout lab-readout--wide" aria-live="polite" aria-atomic="true">
         <div><span>{c.sum}</span><strong>{approximate.toFixed(4)}</strong></div>
         <div><span>{c.exact}</span><strong>{exact.toFixed(4)}</strong></div>
         <div><span>{c.error}</span><strong>{Math.abs(approximate - exact).toFixed(4)}</strong></div>

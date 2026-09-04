@@ -6,9 +6,9 @@
 .home-hero__copy > p { max-width: 610px; margin: 0; color: var(--ink-soft); font-size: var(--t-lg); line-height: 1.65; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 11px; margin-top: 32px; }
 .hero-proof { display: flex; align-items: center; gap: 13px; margin-top: 36px; }
-.mini-avatars { display: flex; padding-left: 8px; }
-.mini-avatars span { display: grid; width: 32px; height: 32px; place-items: center; margin-left: -8px; color: var(--ink); border: 2px solid var(--paper); border-radius: 50%; background: var(--gold-soft); font-family: var(--font-serif); font-weight: 800; }
-.mini-avatars span:nth-child(2) { background: var(--blue-soft); }.mini-avatars span:nth-child(3) { background: var(--green-soft); }
+.mini-avatars { display: flex; gap: 6px; }
+.mini-avatars span { display: grid; width: 30px; height: 30px; place-items: center; color: var(--ink-soft); border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface); font-family: var(--font-serif); font-weight: 700; }
+
 .hero-proof p { margin: 0; color: var(--ink-faint); font-size: var(--t-xs); line-height: 1.45; }.hero-proof strong { color: var(--ink-soft); }
 
 .hero-visual { position: relative; width: min(100%, 480px); aspect-ratio: 1; justify-self: end; padding: 22px; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-xl); background: radial-gradient(circle at 50% 44%, color-mix(in srgb, var(--blue-soft) 55%, transparent), transparent 52%), var(--surface); box-shadow: var(--shadow-md); }

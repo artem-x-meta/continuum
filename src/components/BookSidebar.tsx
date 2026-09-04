@@ -16,11 +16,12 @@ type BookSidebarProps = {
 export function BookSidebar({ currentChapter, currentSection, completed, onOpenSearch, openOnMobile = false, onClose }: BookSidebarProps) {
   const { copy, chapters, chapterMeta } = useLocale();
   const c = copy.sidebar;
-  const [expanded, setExpanded] = useState(currentChapter);
+  // Несколько глав можно держать открытыми: сравнить два раздела — обычная задача.
+  const [expanded, setExpanded] = useState<Set<number>>(() => new Set([currentChapter]));
   const [mobileLayout, setMobileLayout] = useState(() => window.matchMedia('(max-width: 900px)').matches);
   const sidebarRef = useRef<HTMLElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-  useEffect(() => setExpanded(currentChapter), [currentChapter]);
+  useEffect(() => setExpanded((current) => current.has(currentChapter) ? current : new Set(current).add(currentChapter)), [currentChapter]);
 
   // Без этого отметка «ты здесь» уезжает под сгиб на дальних главах:
   // сайдбар прокручен в начало, а активный параграф — на 1250px ниже.
@@ -91,7 +92,7 @@ export function BookSidebar({ currentChapter, currentSection, completed, onOpenS
         <div className="sidebar-kicker">{c.scope}</div>
         <nav className="sidebar-nav" aria-label={c.nav}>
           {chapters.map((chapter) => {
-            const isExpanded = expanded === chapter.number;
+            const isExpanded = expanded.has(chapter.number);
             const done = chapter.sections.filter((section) => completed.has(section.number)).length;
             const sectionsId = `sidebar-chapter-${chapter.number}`;
             return (
@@ -99,7 +100,11 @@ export function BookSidebar({ currentChapter, currentSection, completed, onOpenS
                 <button
                   type="button"
                   className={chapter.number === currentChapter ? 'is-current' : ''}
-                  onClick={() => setExpanded(isExpanded ? 0 : chapter.number)}
+                  onClick={() => setExpanded((current) => {
+                    const next = new Set(current);
+                    if (!next.delete(chapter.number)) next.add(chapter.number);
+                    return next;
+                  })}
                   aria-expanded={isExpanded}
                   aria-controls={sectionsId}
                 >

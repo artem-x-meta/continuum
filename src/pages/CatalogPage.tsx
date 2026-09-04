@@ -58,7 +58,7 @@ export function CatalogPage({ completed, bookmarks }: CatalogPageProps) {
 
       <div className="catalog-tools">
         <label className="catalog-search"><Search size={18} aria-hidden="true" /><span className="sr-only">{c.filter}</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={c.filter} /></label>
-        <div className="filter-pills" role="group" aria-label={c.filter}>
+        <div className="filter-pills" role="group" aria-label={c.filterGroup}>
           <button type="button" aria-pressed={track === 'all'} className={track === 'all' ? 'is-active' : ''} onClick={() => setTrack('all')}>{c.all}</button>
           {tracks.map((item) => <button key={item.name} type="button" aria-pressed={track === item.name} className={track === item.name ? 'is-active' : ''} onClick={() => setTrack(item.name)}>{item.name}</button>)}
           <button type="button" aria-pressed={onlyBookmarks} className={onlyBookmarks ? 'is-active bookmark-filter' : 'bookmark-filter'} onClick={() => setOnlyBookmarks((value) => !value)}><Bookmark size={13} fill={onlyBookmarks ? 'currentColor' : 'none'} aria-hidden="true" /> {c.bookmarks}{bookmarks.size ? ` · ${bookmarks.size}` : ''}</button>

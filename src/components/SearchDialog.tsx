@@ -27,6 +27,7 @@ type SearchEntry = SectionSearchSource & {
 };
 
 const frequentSections = [1, 4, 16, 20, 29, 35, 48, 66];
+const RESULT_LIMIT = 30;
 const dialogTitleId = 'book-search-dialog-title';
 const inputId = 'book-search-input';
 const listboxId = 'book-search-results';
@@ -37,6 +38,46 @@ export function normalizeSearchText(value: string, language: Language) {
     .replaceAll('ё', 'е')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+/**
+ * Русские окончания, от длинных к коротким. Без этого «производной» находит
+ * 15 параграфов, «производные» — 18, а «производная» — 20: читатель теряет
+ * результаты просто потому, что набрал другой падеж.
+ */
+const RUSSIAN_ENDINGS = [
+  'иями', 'ями', 'ами', 'ыми', 'ими', 'ого', 'его', 'ому', 'ему',
+  'ах', 'ях', 'ых', 'их', 'ов', 'ев', 'ей', 'ий', 'ый', 'ой', 'ая', 'яя',
+  'ое', 'ее', 'ые', 'ие', 'ом', 'ем', 'ам', 'ям', 'ым', 'им', 'ую', 'юю',
+  'ья', 'ье', 'ьи', 'ии', 'ия', 'ию', 'ие',
+  'а', 'я', 'о', 'е', 'ы', 'и', 'у', 'ю', 'ь', 'й',
+];
+
+const MIN_STEM = 3;
+
+/** Отсечение окончания за один проход: индекс и запрос стеммятся ровно один раз. */
+export function stemToken(token: string, language: Language) {
+  if (language !== 'ru') {
+    // Только множественное число: «derivatives» → «derivative», но «class» не трогаем.
+    if (token.length - 1 >= MIN_STEM && token.endsWith('s') && !token.endsWith('ss')) {
+      return token.slice(0, -1);
+    }
+    return token;
+  }
+  for (const ending of RUSSIAN_ENDINGS) {
+    if (token.length - ending.length >= MIN_STEM && token.endsWith(ending)) {
+      return token.slice(0, -ending.length);
+    }
+  }
+  return token;
+}
+
+export function stemSearchText(value: string, language: Language) {
+  return normalizeSearchText(value, language)
+    .split(' ')
+    .filter(Boolean)
+    .map((token) => stemToken(token, language))
+    .join(' ');
 }
 
 function sectionContentParts(section: BookSection, guide: SectionGuide, detail: LessonDetail): Array<string | number> {
@@ -84,13 +125,13 @@ export function buildSectionSearchText({ chapter, section, meta, guide, detail }
     meta.hours,
     ...sectionContentParts(section, guide, detail),
   ];
-  return normalizeSearchText(parts.join(' '), language);
+  return stemSearchText(parts.join(' '), language);
 }
 
+/** `searchText` должен быть уже пропущен через stemSearchText — стеммим за один проход. */
 export function matchesSearchText(searchText: string, query: string, language: Language) {
-  const tokens = normalizeSearchText(query, language).split(' ').filter(Boolean);
-  const normalizedSearchText = normalizeSearchText(searchText, language);
-  return tokens.length === 0 || tokens.every((token) => normalizedSearchText.includes(token));
+  const tokens = stemSearchText(query, language).split(' ').filter(Boolean);
+  return tokens.length === 0 || tokens.every((token) => searchText.includes(token));
 }
 
 export function SearchDialog({ open, onClose }: SearchDialogProps) {
@@ -118,13 +159,13 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
     return {
       ...source,
       text: buildSectionSearchText(source, language),
-      headingText: normalizeSearchText([
+      headingText: stemSearchText([
         section.number,
         `§${section.number}`,
         section.title,
         ...section.topics.flatMap((topic) => [topic.number, topic.title]),
       ].join(' '), language),
-      sectionText: normalizeSearchText(sectionContentParts(section, source.guide, source.detail).join(' '), language),
+      sectionText: stemSearchText(sectionContentParts(section, source.guide, source.detail).join(' '), language),
     };
   })), [chapterMeta, chapters, language, lessonDetails, sectionGuides]);
 
@@ -142,7 +183,7 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
         return priority(left) - priority(right) || left.section.number - right.section.number;
       });
   }, [entries, language, query]);
-  const results = useMemo(() => matchingResults.slice(0, 12), [matchingResults]);
+  const results = useMemo(() => matchingResults.slice(0, RESULT_LIMIT), [matchingResults]);
   const safeActiveIndex = results.length ? Math.min(activeIndex, results.length - 1) : -1;
   const activeOptionId = safeActiveIndex >= 0 ? `book-search-option-${results[safeActiveIndex].section.number}` : undefined;
 
@@ -256,7 +297,7 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
 
   const statusText = query
     ? matchingResults.length
-      ? `${c.found}: ${matchingResults.length}`
+      ? `${c.found}: ${matchingResults.length}${matchingResults.length > results.length ? ` · ${c.showingFirst} ${results.length}` : ''}`
       : `${c.emptyTitle}. ${c.emptyBody}`
     : c.frequent;
 
@@ -290,7 +331,7 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
           />
           <button type="button" onClick={() => onCloseRef.current()} aria-label={c.closeButton}><X size={19} /></button>
         </div>
-        <div className="search-panel__label" aria-hidden="true">{query ? `${c.found}: ${matchingResults.length}` : c.frequent}</div>
+        <div className="search-panel__label" aria-hidden="true">{query ? `${c.found}: ${matchingResults.length}${matchingResults.length > results.length ? ` · ${c.showingFirst} ${results.length}` : ''}` : c.frequent}</div>
         <div
           id={listboxId}
           className={results.length ? 'search-results' : 'search-results search-results--empty'}

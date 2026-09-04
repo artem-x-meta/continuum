@@ -4,7 +4,31 @@ import { resolve } from 'node:path';
 import { chromium } from 'playwright-core';
 
 const output = resolve(import.meta.dirname, '..', '.screenshots');
-const baseUrl = process.env.VISUAL_BASE_URL ?? 'http://127.0.0.1:4173/';
+const fallbackHosts = ['http://127.0.0.1:4173/', 'http://localhost:4173/'];
+
+// Порт может занять другое приложение (vite preview --strictPort из соседнего
+// проекта), поэтому мало достучаться до адреса — надо убедиться, что там мы.
+async function servesContinuum(url) {
+  try {
+    const response = await fetch(url);
+    return response.ok && (await response.text()).includes('Continuum');
+  } catch {
+    return false;
+  }
+}
+
+async function resolveBaseUrl() {
+  if (process.env.VISUAL_BASE_URL) return process.env.VISUAL_BASE_URL;
+  for (const candidate of fallbackHosts) {
+    if (await servesContinuum(candidate)) return candidate;
+  }
+  throw new Error(
+    `Continuum не отвечает ни на одном из адресов: ${fallbackHosts.join(', ')}. `
+    + 'Запусти npm run preview или укажи VISUAL_BASE_URL.',
+  );
+}
+
+const baseUrl = await resolveBaseUrl();
 await mkdir(output, { recursive: true });
 
 const browserCandidates = [

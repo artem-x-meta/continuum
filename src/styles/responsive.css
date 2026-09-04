@@ -22,7 +22,7 @@
 }
 
 @media (max-width: 640px) {
-  .topbar { min-height: 60px; padding-inline: 13px; }.brand__name { font-size: var(--t-xs); }.search-trigger { display: none; }.progress-pill { display: none; }.mobile-menu-button { display: grid; }.mobile-nav { top: 60px; }
+  .topbar { min-height: 60px; padding-inline: 13px; }.brand__name { font-size: var(--t-xs); }.search-trigger { padding: 0 10px; }.search-trigger span, .search-trigger kbd { display: none; }.progress-pill { display: none; }.mobile-menu-button { display: grid; }.mobile-nav { top: 60px; }
   .page-width { width: calc(100% - 28px); }.section-space { padding-block: 60px; }
   .home-hero { padding-block: 45px 54px; overflow: hidden; }.home-hero h1 { max-width: 100%; margin-top: 18px; font-size: clamp(1.875rem, 8.5vw, 2.25rem); line-height: 1.1; }.home-hero__copy > p { max-width: 100%; font-size: var(--t-md); }.hero-actions { display: grid; }.hero-actions .button { width: 100%; }.hero-proof { align-items: flex-start; text-align: left; }.hero-visual { padding: 12px; border-radius: var(--radius-xl); }.hero-visual__label { top: 16px; left: 17px; }.hero-formula { right: 12px; bottom: 57px; }.hero-slider { right: 16px; bottom: 17px; left: 16px; }
   .principles-bar__inner { grid-template-columns: 1fr; }.principles-bar__inner > div { border-bottom: 1px solid var(--line); }.principles-bar__inner > div:last-child { border-bottom: 0; }

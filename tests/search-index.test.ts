@@ -3,6 +3,8 @@ import {
   buildSectionSearchText,
   matchesSearchText,
   normalizeSearchText,
+  stemSearchText,
+  stemToken,
   type SectionSearchSource,
 } from '../src/components/SearchDialog';
 import type { BookSection, Chapter } from '../src/data/book';
@@ -81,5 +83,46 @@ describe('full-text section index', () => {
     expect(matchesSearchText(text, 'practice_answer_sentinel guide_summary_sentinel', 'en')).toBe(true);
     expect(matchesSearchText(text, 'missing_sentinel', 'en')).toBe(false);
     expect(normalizeSearchText('  ТЕОРЁМА   РОЛЛЯ ', 'ru')).toBe('теорема ролля');
+  });
+});
+
+describe('русская морфология в поиске', () => {
+  const forms = (word: string) => stemToken(normalizeSearchText(word, 'ru'), 'ru');
+
+  it('сводит падежи одного слова к общей основе', () => {
+    for (const group of [
+      ['производная', 'производные', 'производной', 'производную', 'производных'],
+      ['матрица', 'матрицы', 'матрицу', 'матрицей'],
+      ['предел', 'пределы', 'пределов', 'пределом'],
+      ['функция', 'функции', 'функцию', 'функций'],
+      ['ряд', 'ряды', 'ряда', 'рядов'],
+      ['интеграл', 'интеграла', 'интегралы', 'интегралов'],
+      ['Стокса', 'Стокс', 'Стоксу'],
+    ]) {
+      const stems = new Set(group.map(forms));
+      expect(stems, group.join(' / ')).toHaveLength(1);
+    }
+  });
+
+  it('не режет слово до неразличимого огрызка', () => {
+    for (const word of ['ряд', 'ось', 'куб', 'сумма', 'угол']) {
+      expect(forms(word).length, word).toBeGreaterThanOrEqual(3);
+    }
+  });
+
+  it('индекс и запрос стеммятся согласованно', () => {
+    const text = stemSearchText('Производная функции в точке и её геометрический смысл', 'ru');
+    for (const query of ['производная', 'производной', 'производные', 'функция', 'функций']) {
+      expect(matchesSearchText(text, query, 'ru'), query).toBe(true);
+    }
+    expect(matchesSearchText(text, 'интеграл', 'ru')).toBe(false);
+  });
+
+  it('английский индекс переживает множественное число', () => {
+    const text = stemSearchText('Matrices and derivatives of a function', 'en');
+    expect(matchesSearchText(text, 'derivative', 'en')).toBe(true);
+    expect(matchesSearchText(text, 'derivatives', 'en')).toBe(true);
+    expect(matchesSearchText(text, 'functions', 'en')).toBe(true);
+    expect(stemToken('class', 'en')).toBe('class');
   });
 });

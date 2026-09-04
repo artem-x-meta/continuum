@@ -9,7 +9,7 @@ function orbitPath(radius: number, wave: number, phase: number) {
     const angle = (index / 180) * Math.PI * 2;
     const modulation = 1 + 0.12 * Math.sin(wave * angle + phase);
     const x = center + Math.cos(angle) * radius * modulation;
-    const y = center + Math.sin(angle) * radius * modulation * 0.72;
+    const y = center + Math.sin(angle) * radius * modulation;
     return `${index ? 'L' : 'M'} ${x.toFixed(2)} ${y.toFixed(2)}`;
   }).join(' ');
 }
@@ -22,7 +22,7 @@ export function HeroVisual() {
   const pointAngle = lambda * 1.6;
   const point = {
     x: center + Math.cos(pointAngle) * 151 * (1 + 0.12 * Math.sin(4 * pointAngle + lambda * 3)),
-    y: center + Math.sin(pointAngle) * 151 * (1 + 0.12 * Math.sin(4 * pointAngle + lambda * 3)) * 0.72,
+    y: center + Math.sin(pointAngle) * 151 * (1 + 0.12 * Math.sin(4 * pointAngle + lambda * 3)),
   };
 
   return (
@@ -46,7 +46,7 @@ export function HeroVisual() {
       </svg>
       <div className="hero-formula">
         <span>{c.family}</span>
-        <strong>r(φ) = 1 + 0.12 sin(kφ + λ)</strong>
+        <strong>r(φ) = 1 + 0.12·sin(kφ + λ), k = 2…5</strong>
       </div>
       <label className="hero-slider">
         <span>λ</span>

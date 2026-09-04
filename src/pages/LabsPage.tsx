@@ -6,13 +6,13 @@ import { useLocale } from '../i18n/LocaleContext';
 
 export function LabsPage() {
   const { copy } = useLocale();
-  const c = copy.home;
+  const c = copy.labsPage;
   return (
     <main className="labs-page page-width">
       <header className="labs-page__hero">
-        <span className="eyebrow">{c.interactiveKicker}</span>
-        <h1 style={{ whiteSpace: 'pre-line' }}>{c.interactiveTitle}</h1>
-        <p>{c.interactiveText}</p>
+        <span className="eyebrow">{c.kicker}</span>
+        <h1>{c.title}</h1>
+        <p>{c.text}</p>
       </header>
       <div className="labs-page__grid">
         <MatrixLab />
