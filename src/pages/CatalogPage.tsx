@@ -77,11 +77,23 @@ export function CatalogPage({ completed, bookmarks }: CatalogPageProps) {
               </a>
               <div className={sections.length === 1 ? 'catalog-chapter__sections is-single' : 'catalog-chapter__sections'}>
                 {sections.map((section) => (
-                  <a key={section.number} href={routeHref({ page: 'section', section: section.number })}>
-                    <span className="catalog-section-number">§ {section.number}</span>
-                    <span><strong>{section.title}</strong><small>{section.topics.length ? `${section.topics.length} ${plural(section.topics.length, c.topicForms, language)}` : c.whole}</small></span>
-                    {completed.has(section.number) ? <Check size={17} className="catalog-done" /> : bookmarks.has(section.number) ? <Bookmark size={15} className="catalog-bookmark" fill="currentColor" /> : <ArrowRight size={16} />}
-                  </a>
+                  <div className="catalog-section" key={section.number}>
+                    <a href={routeHref({ page: 'section', section: section.number })}>
+                      <span className="catalog-section-number">§ {section.number}</span>
+                      <span><strong>{section.title}</strong><small>{section.topics.length ? `${section.topics.length} ${plural(section.topics.length, c.topicForms, language)}` : c.whole}</small></span>
+                      {completed.has(section.number) ? <Check size={17} className="catalog-done" /> : bookmarks.has(section.number) ? <Bookmark size={15} className="catalog-bookmark" fill="currentColor" /> : <ArrowRight size={16} />}
+                    </a>
+                    {section.topics.length > 0 && (
+                      <details className="catalog-topics">
+                        <summary>{c.showTopics}</summary>
+                        <ul>
+                          {section.topics.map((topic) => (
+                            <li key={topic.number}><span>{topic.number}</span>{topic.title}</li>
+                          ))}
+                        </ul>
+                      </details>
+                    )}
+                  </div>
                 ))}
               </div>
             </article>

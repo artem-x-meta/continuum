@@ -77,7 +77,7 @@ Each web page and each Obsidian note correspond to one numbered section (§); it
 - `src/data/guides-*.ts` contains the concise Russian summaries used by the vault.
 - `src/data/details-*.ts` contains the deeper Russian web lessons.
 - `src/data/en/` contains the complete English content pack.
-- `src/pages/lessonContent.tsx` contains the four extended interactive Russian lessons.
+- `src/pages/lessonContent.tsx` and `src/pages/lessonContent.en.tsx` contain the four extended interactive lessons.
 - `src/i18n/` contains the localized UI copy and locale context.
 - `scripts/build-vault.mjs` generates the Obsidian knowledge base and ZIP archive.
 

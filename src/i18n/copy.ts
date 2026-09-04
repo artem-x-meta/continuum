@@ -2,9 +2,9 @@ export const copies = {
   ru: {
     languageName: 'Русский', languageShort: 'RU',
     header: {
-      catalog: 'Оглавление', calculus: 'Мат. анализ', labs: 'Лаборатории', search: 'Найти тему',
+      catalog: 'Оглавление', resume: 'Продолжить', start: 'Начать', labs: 'Лаборатории', search: 'Найти тему',
       completed: 'Завершённые параграфы', dark: 'Включить тёмную тему', light: 'Включить светлую тему',
-      menu: 'Открыть меню', closeMenu: 'Закрыть меню', home: 'Континуум — на главную', language: 'Язык', mainNav: 'Основная навигация', mobileNav: 'Мобильная навигация', chapterFive: 'Глава V · Анализ', searchShort: 'Поиск',
+      menu: 'Открыть меню', closeMenu: 'Закрыть меню', home: 'Континуум — на главную', language: 'Язык', mainNav: 'Основная навигация', mobileNav: 'Мобильная навигация', searchShort: 'Поиск',
     },
     search: {
       dialog: 'Поиск по книге', placeholder: 'Матрицы, предел, формула Стокса…', frequent: 'С чего начать',
@@ -30,7 +30,7 @@ export const copies = {
       ],
       roadmapKicker: 'Карта курса', roadmapTitle: 'Один маршрут.\nЧетыре масштаба.',
       roadmapText: 'Главы собраны в смысловые части. Можно идти подряд или открыть ровно ту идею, которая нужна сейчас.',
-      allTopicsA: 'Посмотреть все', allTopicsB: 'тем', chapter: 'Глава',
+      allTopicsA: 'Открыть оглавление: все', allTopicsB: 'тем', chapter: 'Глава',
       knowledgeKicker: 'Вторая память', knowledgeTitle: 'Короткие заметки\nдля Obsidian',
       knowledgeText: 'У каждого параграфа есть компактный конспект: ключевая идея, формула и связи с соседними понятиями. Удобно повторить перед занятием и встроить в свою базу знаний.',
       knowledgePoints: ['wiki-ссылки между темами', 'единая карта курса', 'Markdown без привязки к сервису'],
@@ -47,7 +47,7 @@ export const copies = {
       kicker: 'Полное оглавление', title: 'Карта высшей\nматематики', intro: 'От первых операций с матрицами до преобразования Лапласа. Числа справа считают, сколько пройдено.',
       chapters: 'глав', sections: 'параграфов', topics: 'тем', completed: 'пройдено', filter: 'Поиск по книге: название, формула, разбор', filterGroup: 'Часть курса', all: 'Все части',
       bookmarks: 'Закладки', empty: 'Ничего не найдено. Попробуй убрать фильтр или сократить запрос.', chapter: 'Глава',
-      topicForms: ['тема', 'темы', 'тем'], whole: 'цельный параграф',
+      topicForms: ['тема', 'темы', 'тем'], whole: 'цельный параграф', showTopics: 'Темы',
     },
     chapter: {
       book: 'Книга', chapter: 'Глава', hourForms: ['час', 'часа', 'часов'], sectionForms: ['параграф', 'параграфа', 'параграфов'], completed: 'пройдено',
@@ -87,9 +87,9 @@ export const copies = {
   en: {
     languageName: 'English', languageShort: 'EN',
     header: {
-      catalog: 'Contents', calculus: 'Calculus', labs: 'Labs', search: 'Find a topic',
+      catalog: 'Contents', resume: 'Resume', start: 'Start', labs: 'Labs', search: 'Find a topic',
       completed: 'Completed sections', dark: 'Switch to dark theme', light: 'Switch to light theme',
-      menu: 'Open menu', closeMenu: 'Close menu', home: 'Continuum — home', language: 'Language', mainNav: 'Main navigation', mobileNav: 'Mobile navigation', chapterFive: 'Chapter V · Calculus', searchShort: 'Search',
+      menu: 'Open menu', closeMenu: 'Close menu', home: 'Continuum — home', language: 'Language', mainNav: 'Main navigation', mobileNav: 'Mobile navigation', searchShort: 'Search',
     },
     search: {
       dialog: 'Search the book', placeholder: 'Matrices, limits, Stokes’ theorem…', frequent: 'Good places to start',
@@ -115,7 +115,7 @@ export const copies = {
       ],
       roadmapKicker: 'Course map', roadmapTitle: 'One route.\nFour scales.',
       roadmapText: 'Chapters are grouped by meaning. Follow the route in order or open exactly the idea you need right now.',
-      allTopicsA: 'Explore all', allTopicsB: 'topics', chapter: 'Chapter',
+      allTopicsA: 'Open the contents: all', allTopicsB: 'topics', chapter: 'Chapter',
       knowledgeKicker: 'A second memory', knowledgeTitle: 'Concise notes\nfor Obsidian',
       knowledgeText: 'Every section has a compact recap: the key idea, a formula, and links to neighboring concepts. Use it for quick review and plug it into your own knowledge base.',
       knowledgePoints: ['wiki links between topics', 'one unified course map', 'service-independent Markdown'],
@@ -132,7 +132,7 @@ export const copies = {
       kicker: 'Complete contents', title: 'A map of higher\nmathematics', intro: 'From the first matrix operations to the Laplace transform. The figures on the right track how far you have come.',
       chapters: 'chapters', sections: 'sections', topics: 'topics', completed: 'completed', filter: 'Search the book: titles, formulas, worked examples', filterGroup: 'Course part', all: 'All parts',
       bookmarks: 'Bookmarks', empty: 'Nothing found. Clear a filter or shorten your query.', chapter: 'Chapter',
-      topicForms: ['topic', 'topics', 'topics'], whole: 'single continuous section',
+      topicForms: ['topic', 'topics', 'topics'], whole: 'single continuous section', showTopics: 'Topics',
     },
     chapter: {
       book: 'Book', chapter: 'Chapter', hourForms: ['hour', 'hours', 'hours'], sectionForms: ['section', 'sections', 'sections'], completed: 'completed',

@@ -172,7 +172,7 @@ function App() {
         onOpenSearch={openSearch}
         mobileMenuOpen={mobileNavOpen}
         onToggleMobileMenu={() => setMobileNavOpen((value) => !value)}
-        completed={completed.size}
+        completed={completed}
         currentRoute={route}
       />
 

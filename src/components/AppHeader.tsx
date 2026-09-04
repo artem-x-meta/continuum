@@ -1,4 +1,4 @@
-import { BookOpen, Check, Menu, Moon, Search, Sun, X } from 'lucide-react';
+import { ArrowRight, BookOpen, Check, Menu, Moon, Search, Sun, X } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import type { Route } from '../routing';
 import { routeHref } from '../routing';
@@ -10,7 +10,7 @@ type AppHeaderProps = {
   onOpenSearch: () => void;
   mobileMenuOpen: boolean;
   onToggleMobileMenu: () => void;
-  completed: number;
+  completed: Set<number>;
   currentRoute: Route;
 };
 
@@ -23,14 +23,16 @@ export function AppHeader({
   completed,
   currentRoute,
 }: AppHeaderProps) {
-  const { language, setLanguage, copy } = useLocale();
+  const { language, setLanguage, copy, chapters } = useLocale();
   const c = copy.header;
   const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
   const mobileNavRef = useRef<HTMLElement>(null);
   const catalogActive = currentRoute.page === 'catalog';
   const labsActive = currentRoute.page === 'labs';
-  const calculusActive = (currentRoute.page === 'chapter' && currentRoute.chapter === 5)
-    || (currentRoute.page === 'section' && currentRoute.section >= 13 && currentRoute.section <= 26);
+  // Куда вести «Продолжить»: первый незавершённый параграф читателя.
+  const resumeSection = chapters.flatMap((chapter) => chapter.sections).find((section) => !completed.has(section.number))
+    ?? chapters[0].sections[0];
+  const resumeLabel = completed.size ? c.resume : c.start;
   const closeMobileMenu = () => {
     if (mobileMenuOpen) onToggleMobileMenu();
   };
@@ -63,7 +65,7 @@ export function AppHeader({
 
       <nav className="topbar__nav" aria-label={c.mainNav}>
         <a className={catalogActive ? 'is-active' : ''} aria-current={catalogActive ? 'page' : undefined} href={routeHref({ page: 'catalog' })}>{c.catalog}</a>
-        <a className={calculusActive ? 'is-active' : ''} aria-current={calculusActive ? 'page' : undefined} href={routeHref({ page: 'chapter', chapter: 5 })}>{c.calculus}</a>
+        <a href={routeHref({ page: 'section', section: resumeSection.number })}>{resumeLabel}</a>
         <a className={labsActive ? 'is-active' : ''} aria-current={labsActive ? 'page' : undefined} href={routeHref({ page: 'labs' })}>{c.labs}</a>
       </nav>
 
@@ -73,9 +75,9 @@ export function AppHeader({
           <span>{c.search}</span>
           <kbd>Ctrl K</kbd>
         </button>
-        {completed > 0 && (
+        {completed.size > 0 && (
           <a href={routeHref({ page: 'catalog' })} className="progress-pill" title={c.completed}>
-            <Check size={14} /> {completed}/80
+            <Check size={14} /> {completed.size}/80
           </a>
         )}
         <div className="language-switch" role="group" aria-label={c.language}>
@@ -93,7 +95,7 @@ export function AppHeader({
       {mobileMenuOpen && (
         <nav ref={mobileNavRef} id="mobile-navigation" className="mobile-nav" aria-label={c.mobileNav}>
           <a onClick={closeMobileMenu} aria-current={catalogActive ? 'page' : undefined} href={routeHref({ page: 'catalog' })}><BookOpen size={17} /> {c.catalog}</a>
-          <a onClick={closeMobileMenu} aria-current={calculusActive ? 'page' : undefined} href={routeHref({ page: 'chapter', chapter: 5 })}>{c.chapterFive}</a>
+          <a onClick={closeMobileMenu} href={routeHref({ page: 'section', section: resumeSection.number })}><ArrowRight size={17} /> {resumeLabel} · § {resumeSection.number}</a>
           <a onClick={closeMobileMenu} aria-current={labsActive ? 'page' : undefined} href={routeHref({ page: 'labs' })}>{c.labs}</a>
           <button type="button" onClick={onOpenSearch}><Search size={17} /> {c.searchShort}</button>
         </nav>
