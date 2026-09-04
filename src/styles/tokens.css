@@ -5,12 +5,12 @@
   --surface-strong: #ffffff;
   --ink: #172536;
   --ink-soft: #536171;
-  --ink-faint: #7d8791;
+  --ink-faint: #5f6a75;
   --line: #dcdad2;
   --line-strong: #c9c6bc;
   --navy: #172536;
   --navy-2: #22364d;
-  --blue: #3b6df2;
+  --blue: #2f5fd8;
   --blue-solid: #315fdc;
   --blue-soft: #e8efff;
   --violet: #7856d8;
@@ -23,11 +23,37 @@
   --green-soft: #e7f6f1;
   --gold: #f2c85b;
   --gold-soft: #fff7db;
-  --shadow-sm: 0 8px 24px rgba(23, 37, 54, .07);
-  --shadow-md: 0 24px 70px rgba(23, 37, 54, .11);
-  --radius-sm: 10px;
-  --radius: 18px;
-  --radius-lg: 30px;
+
+  /* Акцент как ЦВЕТ ТЕКСТА. Обычные --blue/--violet/--coral/--green
+     остаются для заливок и штрихов, где яркость нужна. */
+  --blue-ink: #315fdc;
+  --violet-ink: #6846c5;
+  --coral-ink: #b4462c;
+  --green-ink: #176e60;
+  --gold-ink: #8a6a12;
+  --shadow-sm: 0 2px 8px rgba(23, 37, 54, .06);
+  --shadow-md: 0 8px 28px rgba(23, 37, 54, .1);
+
+  /* Радиусы — пять ступеней, других значений в проекте быть не должно. */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+
+  /* Типографическая шкала — единственный источник размеров текста.
+     Пол для служебного текста — --t-sm (14px); --t-2xs только для
+     прописных подписей с трекингом. */
+  --t-2xs: .75rem;    /* 12 */
+  --t-xs: .8125rem;   /* 13 */
+  --t-sm: .875rem;    /* 14 */
+  --t-md: 1rem;       /* 16 */
+  --t-lg: 1.125rem;   /* 18 — основной текст урока */
+  --t-xl: 1.3125rem;  /* 21 */
+  --t-2xl: 1.625rem;  /* 26 */
+  --t-3xl: 2rem;      /* 32 */
+  --t-4xl: 2.5rem;    /* 40 — потолок для H1 страниц книги */
+  --t-5xl: 3.25rem;   /* 52 — только герой главной */
   --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-serif: Iowan Old Style, Baskerville, "Times New Roman", Georgia, serif;
   font-family: var(--font-sans);
@@ -62,8 +88,13 @@
   --green-soft: #193a35;
   --gold: #f4cf70;
   --gold-soft: #403820;
-  --shadow-sm: 0 8px 25px rgba(0, 0, 0, .18);
-  --shadow-md: 0 28px 80px rgba(0, 0, 0, .3);
+  --blue-ink: #7599ff;
+  --violet-ink: #a78aee;
+  --coral-ink: #ff967e;
+  --green-ink: #5dc5ae;
+  --gold-ink: #f4cf70;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, .22);
+  --shadow-md: 0 10px 32px rgba(0, 0, 0, .34);
   color-scheme: dark;
 }
 
@@ -80,9 +111,9 @@ img, svg { max-width: 100%; }
 :focus-visible { outline: 3px solid color-mix(in srgb, var(--blue) 70%, white); outline-offset: 3px; }
 .sr-only { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; overflow: hidden !important; clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important; }
 .page-width { width: min(1240px, calc(100% - 64px)); margin-inline: auto; }
-.section-space { padding-block: 112px; }
-.eyebrow { display: inline-block; color: var(--blue); font-size: .72rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
-.button { display: inline-flex; min-height: 50px; align-items: center; justify-content: center; gap: 10px; padding: 0 20px; border: 1px solid transparent; border-radius: 999px; font-size: .92rem; font-weight: 750; transition: transform .18s ease, background .18s ease, border-color .18s ease; }
+.section-space { padding-block: 80px; }
+.eyebrow { display: inline-block; color: var(--blue); font-size: var(--t-2xs); font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+.button { display: inline-flex; min-height: 50px; align-items: center; justify-content: center; gap: 10px; padding: 0 20px; border: 1px solid transparent; border-radius: 999px; font-size: var(--t-md); font-weight: 750; transition: transform .18s ease, background .18s ease, border-color .18s ease; }
 .button:hover { transform: translateY(-2px); }
 .button--primary { color: #fff; background: var(--blue-solid); box-shadow: 0 10px 28px color-mix(in srgb, var(--blue) 25%, transparent); }
 .button--primary:hover { background: color-mix(in srgb, var(--blue-solid) 86%, black); }
@@ -93,10 +124,10 @@ img, svg { max-width: 100%; }
 .icon-button:hover { border-color: var(--blue); transform: translateY(-1px); }
 .math { color: inherit; }
 .math--block { display: block; max-width: 100%; margin: 24px 0; padding: 22px 18px; overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: color-mix(in srgb, var(--blue-soft) 42%, var(--surface)); text-align: center; }
-.accent-blue { --accent: var(--blue); --accent-soft: var(--blue-soft); }
-.accent-violet { --accent: var(--violet); --accent-soft: var(--violet-soft); }
-.accent-coral { --accent: var(--coral); --accent-soft: var(--coral-soft); }
-.accent-green { --accent: var(--green); --accent-soft: var(--green-soft); }
+.accent-blue { --accent: var(--blue); --accent-soft: var(--blue-soft); --accent-ink: var(--blue-ink); }
+.accent-violet { --accent: var(--violet); --accent-soft: var(--violet-soft); --accent-ink: var(--violet-ink); }
+.accent-coral { --accent: var(--coral); --accent-soft: var(--coral-soft); --accent-ink: var(--coral-ink); }
+.accent-green { --accent: var(--green); --accent-soft: var(--green-soft); --accent-ink: var(--green-ink); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }

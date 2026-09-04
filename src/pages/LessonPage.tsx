@@ -7,6 +7,7 @@ import { getRelatedSectionNumbers } from '../data/relations';
 import { routeHref } from '../routing';
 import { DerivativeLesson, FourierLesson, MatricesLesson, RiemannLesson } from './lessonContent';
 import { useLocale } from '../i18n/LocaleContext';
+import { plural, pluralForRange } from '../i18n/plural';
 import { MatrixLab } from '../components/labs/MatrixLab';
 import { DerivativeLab } from '../components/labs/DerivativeLab';
 import { RiemannLab } from '../components/labs/RiemannLab';
@@ -134,6 +135,8 @@ export function LessonPage({
   const Featured = language === 'ru' ? featuredLessons[section.number] : undefined;
   const complete = completed.has(section.number);
   const bookmarked = bookmarks.has(section.number);
+  const readingTime = Featured ? '50–65' : '20–30';
+  const blockCount = section.topics.length || 1;
 
   const closeSidebar = () => {
     onCloseSidebar();
@@ -177,7 +180,7 @@ export function LessonPage({
             <div className="lesson-header__topline"><span className="eyebrow">§ {section.number} · {meta.shortTitle}</span><div><button type="button" className={bookmarked ? 'is-active' : ''} onClick={() => onToggleBookmark(section.number)} aria-label={bookmarked ? c.removeBookmark : c.bookmark} aria-pressed={bookmarked}><Bookmark size={18} fill={bookmarked ? 'currentColor' : 'none'} /></button><button type="button" onClick={copyLink} aria-label={copied ? c.copied : copyFailed ? c.copyFailed : c.copy}>{copied ? <Check size={18} /> : <Copy size={18} />}</button><span className="sr-only" role="status" aria-live="polite">{copied ? c.copied : copyFailed ? c.copyFailed : ''}</span></div></div>
             <h1>{section.title}</h1>
             <p>{guide?.summary}</p>
-            <div className="lesson-meta"><span><Clock3 size={16} /> {Featured ? '50–65' : '20–30'} {c.minutes}</span><span><Gauge size={16} /> {section.number < 13 ? c.base : section.number < 47 ? c.middle : c.advanced}</span><span>{section.topics.length || 1} {(section.topics.length || 1) === 1 ? c.blockOne : c.blocks}</span></div>
+            <div className="lesson-meta"><span><Clock3 size={16} /> {readingTime} {pluralForRange(readingTime, c.minuteForms, language)}</span><span><Gauge size={16} /> {section.number < 13 ? c.base : section.number < 47 ? c.middle : c.advanced}</span><span>{blockCount} {plural(blockCount, c.blockForms, language)}</span></div>
           </header>
 
           <div className="lesson-body">

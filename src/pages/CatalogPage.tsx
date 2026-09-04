@@ -3,6 +3,7 @@ import { ArrowRight, Bookmark, Check, Search } from 'lucide-react';
 import { buildSectionSearchText, matchesSearchText } from '../components/SearchDialog';
 import { routeHref } from '../routing';
 import { useLocale } from '../i18n/LocaleContext';
+import { plural } from '../i18n/plural';
 
 type CatalogPageProps = { completed: Set<number>; bookmarks: Set<number> };
 
@@ -78,7 +79,7 @@ export function CatalogPage({ completed, bookmarks }: CatalogPageProps) {
                 {sections.map((section) => (
                   <a key={section.number} href={routeHref({ page: 'section', section: section.number })}>
                     <span className="catalog-section-number">§ {section.number}</span>
-                    <span><strong>{section.title}</strong><small>{section.topics.length ? `${section.topics.length} ${section.topics.length === 1 ? c.topicOne : c.topicCount}` : c.whole}</small></span>
+                    <span><strong>{section.title}</strong><small>{section.topics.length ? `${section.topics.length} ${plural(section.topics.length, c.topicForms, language)}` : c.whole}</small></span>
                     {completed.has(section.number) ? <Check size={17} className="catalog-done" /> : bookmarks.has(section.number) ? <Bookmark size={15} className="catalog-bookmark" fill="currentColor" /> : <ArrowRight size={16} />}
                   </a>
                 ))}

@@ -3,6 +3,7 @@ import { useRef } from 'react';
 import { BookSidebar } from '../components/BookSidebar';
 import { routeHref } from '../routing';
 import { useLocale } from '../i18n/LocaleContext';
+import { plural } from '../i18n/plural';
 
 type ChapterPageProps = {
   chapterNumber: number;
@@ -14,7 +15,7 @@ type ChapterPageProps = {
 };
 
 export function ChapterPage({ chapterNumber, completed, onOpenSearch, sidebarOpen, onToggleSidebar, onCloseSidebar }: ChapterPageProps) {
-  const { copy, chapters, chapterMeta } = useLocale();
+  const { language, copy, chapters, chapterMeta } = useLocale();
   const c = copy.chapter;
   const chapter = chapters.find((item) => item.number === chapterNumber) ?? chapters[0];
   const meta = chapterMeta[chapter.number];
@@ -42,8 +43,8 @@ export function ChapterPage({ chapterNumber, completed, onOpenSearch, sidebarOpe
             <div className="chapter-hero__symbol">{meta.symbol}</div>
           </div>
           <div className="chapter-meta-row">
-            <span><Clock3 size={16} /> ≈ {meta.hours} {c.hours}</span>
-            <span><Target size={16} /> {chapter.sections.length} {chapter.sections.length === 1 ? c.sectionOne : c.sections}</span>
+            <span><Clock3 size={16} /> ≈ {meta.hours} {plural(meta.hours, c.hourForms, language)}</span>
+            <span><Target size={16} /> {chapter.sections.length} {plural(chapter.sections.length, c.sectionForms, language)}</span>
             <span className="chapter-progress"><i><b style={{ width: `${percent}%` }} /></i>{percent}%</span>
           </div>
         </header>
@@ -58,7 +59,7 @@ export function ChapterPage({ chapterNumber, completed, onOpenSearch, sidebarOpe
               <a key={section.number} className={completed.has(section.number) ? 'is-complete' : ''} href={routeHref({ page: 'section', section: section.number })}>
                 <span className="section-card__index">{String(index + 1).padStart(2, '0')}</span>
                 <span className="section-card__copy">
-                  <small>§ {section.number} · {section.topics.length || 1} {(section.topics.length || 1) === 1 ? c.blockOne : c.blocks}</small>
+                  <small>§ {section.number} · {section.topics.length || 1} {plural(section.topics.length || 1, c.blockForms, language)}</small>
                   <strong>{section.title}</strong>
                   <em>{section.topics.slice(0, 3).map((topic) => topic.title).join(' · ') || c.whole}</em>
                 </span>
