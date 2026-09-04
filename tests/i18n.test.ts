@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import katex from 'katex';
 import { chapters } from '../src/data/book';
@@ -58,5 +59,26 @@ describe('RU/EN localization', () => {
     setRouteLanguageFallback('en');
     expect(routeHref({ page: 'labs' })).toBe('#/en/labs');
     setRouteLanguageFallback('ru');
+  });
+});
+
+describe('расширенные уроки', () => {
+  it('существуют на обоих языках для одних и тех же параграфов', async () => {
+    const { featuredLessons } = await import('../src/pages/LessonPage');
+    const ru = Object.keys(featuredLessons.ru).map(Number).sort((a, b) => a - b);
+    const en = Object.keys(featuredLessons.en).map(Number).sort((a, b) => a - b);
+    expect(ru).toEqual([1, 20, 35, 66]);
+    expect(en).toEqual(ru);
+    for (const section of ru) {
+      expect(featuredLessons.ru[section], `ru §${section}`).toBeTypeOf('function');
+      expect(featuredLessons.en[section], `en §${section}`).toBeTypeOf('function');
+      expect(featuredLessons.en[section]).not.toBe(featuredLessons.ru[section]);
+    }
+  });
+
+  it('в английском пакете расширенных уроков нет кириллицы вне комментариев', () => {
+    const source = readFileSync(new URL('../src/pages/lessonContent.en.tsx', import.meta.url), 'utf8');
+    const withoutComments = source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+    expect(withoutComments).not.toMatch(/[А-Яа-яЁё]/);
   });
 });

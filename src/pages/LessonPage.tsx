@@ -7,7 +7,9 @@ import { ConceptCard, Reveal, StepExample, TermExplorer } from '../components/Le
 import { getRelatedSectionNumbers } from '../data/relations';
 import { routeHref } from '../routing';
 import { DerivativeLesson, FourierLesson, MatricesLesson, RiemannLesson } from './lessonContent';
+import { DerivativeLessonEn, FourierLessonEn, MatricesLessonEn, RiemannLessonEn } from './lessonContent.en';
 import { useLocale } from '../i18n/LocaleContext';
+import type { Language } from '../i18n/copy';
 import { plural } from '../i18n/plural';
 import { MatrixLab } from '../components/labs/MatrixLab';
 import { DerivativeLab } from '../components/labs/DerivativeLab';
@@ -26,11 +28,9 @@ type LessonPageProps = {
   onCloseSidebar: () => void;
 };
 
-const featuredLessons: Partial<Record<number, ComponentType>> = {
-  1: MatricesLesson,
-  20: DerivativeLesson,
-  35: RiemannLesson,
-  66: FourierLesson,
+export const featuredLessons: Record<Language, Partial<Record<number, ComponentType>>> = {
+  ru: { 1: MatricesLesson, 20: DerivativeLesson, 35: RiemannLesson, 66: FourierLesson },
+  en: { 1: MatricesLessonEn, 20: DerivativeLessonEn, 35: RiemannLessonEn, 66: FourierLessonEn },
 };
 
 const localizedLabs: Partial<Record<number, ComponentType>> = {
@@ -173,7 +173,7 @@ export function LessonPage({
   const currentIndex = allSections.findIndex((item) => item.section.number === section.number);
   const previous = allSections[currentIndex - 1];
   const next = allSections[currentIndex + 1];
-  const Featured = language === 'ru' ? featuredLessons[section.number] : undefined;
+  const Featured = featuredLessons[language][section.number];
   const complete = completed.has(section.number);
   const bookmarked = bookmarks.has(section.number);
   const topicCount = section.topics.length;

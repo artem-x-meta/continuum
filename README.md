@@ -11,7 +11,7 @@ A bilingual interactive book on higher mathematics, built around visual experime
 - full-text search, chapter navigation, bookmarks, local progress, and a dark theme;
 - interactive laboratories for matrices, derivatives, Riemann sums, and Fourier series;
 - a dedicated explanation, glossary, step-by-step example, common pitfall, and practice problem for every section;
-- four extended interactive lessons for the core topics;
+- four extended interactive lessons for the core topics, in both languages;
 - `vault/` with 101 connected Markdown notes, formulas, tags, and wiki links;
 - `public/continuum-obsidian-vault.zip`, regenerated automatically and available from the home page.
 
