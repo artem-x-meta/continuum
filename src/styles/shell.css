@@ -1,4 +1,4 @@
-.topbar { position: sticky; z-index: 50; top: 0; display: grid; grid-template-columns: 1fr auto 1fr; min-height: 66px; align-items: center; padding: 0 max(28px, calc((100vw - 1440px) / 2)); border-bottom: 1px solid color-mix(in srgb, var(--line) 76%, transparent); background: color-mix(in srgb, var(--paper) 86%, transparent); backdrop-filter: blur(18px); }
+.topbar { position: sticky; z-index: 50; top: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); min-height: 66px; align-items: center; padding: 0 max(28px, calc((100vw - 1440px) / 2)); border-bottom: 1px solid color-mix(in srgb, var(--line) 76%, transparent); background: color-mix(in srgb, var(--paper) 86%, transparent); backdrop-filter: blur(18px); }
 .brand { display: inline-flex; width: fit-content; align-items: center; gap: 10px; }
 .brand__mark { display: grid; width: 33px; height: 33px; place-items: center; color: var(--gold); border-radius: var(--radius); background: var(--navy); font-family: var(--font-serif); font-size: var(--t-xl); font-style: italic; line-height: 1; }
 .brand__name { font-size: var(--t-sm); font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
@@ -22,7 +22,7 @@ kbd { display: inline-grid; min-width: 24px; height: 24px; place-items: center; 
 
 .search-modal { position: fixed; z-index: 100; inset: 0; display: grid; align-items: start; justify-items: center; padding-top: min(15vh, 130px); background: rgba(8, 16, 26, .55); backdrop-filter: blur(8px); }
 .search-panel { width: min(660px, calc(100% - 30px)); overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); box-shadow: 0 30px 100px rgba(0, 0, 0, .3); }
-.search-panel__input { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; padding: 15px 16px 15px 20px; border-bottom: 1px solid var(--line); }
+.search-panel__input { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 15px 16px 15px 20px; border-bottom: 1px solid var(--line); }
 .search-panel__input svg { color: var(--blue); }
 .search-panel__input input { width: 100%; padding: 4px 0; color: var(--ink); border: 0; outline: 0; background: transparent; font-size: var(--t-lg); }
 .search-panel__input:focus-within { box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--blue) 72%, transparent); }

@@ -45,7 +45,7 @@ export const copies = {
     },
     catalog: {
       kicker: 'Полное оглавление', title: 'Карта высшей\nматематики', intro: 'От первых операций с матрицами до преобразования Лапласа. Числа справа считают, сколько пройдено.',
-      chapters: 'глав', sections: 'параграфов', topics: 'тем', completed: 'пройдено', filter: 'Поиск по книге: название, формула, разбор', filterGroup: 'Часть курса', all: 'Все части',
+      chapters: 'глав', sections: 'параграфов', topics: 'тем', completed: 'пройдено', filter: 'Название, формула, разбор…', filterGroup: 'Часть курса', all: 'Все части',
       bookmarks: 'Закладки', empty: 'Ничего не найдено. Попробуй убрать фильтр или сократить запрос.', chapter: 'Глава',
       topicForms: ['тема', 'темы', 'тем'], whole: 'цельный параграф', showTopics: 'Темы',
     },
@@ -136,7 +136,7 @@ export const copies = {
     },
     catalog: {
       kicker: 'Complete contents', title: 'A map of higher\nmathematics', intro: 'From the first matrix operations to the Laplace transform. The figures on the right track how far you have come.',
-      chapters: 'chapters', sections: 'sections', topics: 'topics', completed: 'completed', filter: 'Search the book: titles, formulas, worked examples', filterGroup: 'Course part', all: 'All parts',
+      chapters: 'chapters', sections: 'sections', topics: 'topics', completed: 'completed', filter: 'Titles, formulas, worked examples…', filterGroup: 'Course part', all: 'All parts',
       bookmarks: 'Bookmarks', empty: 'Nothing found. Clear a filter or shorten your query.', chapter: 'Chapter',
       topicForms: ['topic', 'topics', 'topics'], whole: 'single continuous section', showTopics: 'Topics',
     },

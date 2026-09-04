@@ -140,6 +140,18 @@ for (const check of checks) {
   if (metrics.scrollWidth > metrics.width) {
     throw new Error(`${check.name}: горизонтальное переполнение ${metrics.scrollWidth - metrics.width}px`);
   }
+
+  // Раннер CI набирает текст более широкими шрифтами, чем машина разработчика,
+  // поэтому вёрстка должна выдерживать запас, а не совпадать впритык.
+  await page.addStyleTag({ content: 'html { font-size: 18.4px; }' });
+  await page.waitForTimeout(150);
+  const stressed = await page.evaluate(() => ({
+    width: document.documentElement.clientWidth,
+    scrollWidth: document.documentElement.scrollWidth,
+  }));
+  if (stressed.scrollWidth > stressed.width) {
+    throw new Error(`${check.name}: переполнение ${stressed.scrollWidth - stressed.width}px при тексте +15% (запас на шрифты другой ОС)`);
+  }
   await page.close();
 }
 
