@@ -22,6 +22,16 @@ export function BookSidebar({ currentChapter, currentSection, completed, onOpenS
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   useEffect(() => setExpanded(currentChapter), [currentChapter]);
 
+  // Без этого отметка «ты здесь» уезжает под сгиб на дальних главах:
+  // сайдбар прокручен в начало, а активный параграф — на 1250px ниже.
+  useEffect(() => {
+    const sidebar = sidebarRef.current;
+    const active = sidebar?.querySelector<HTMLElement>('.sidebar-sections a.is-active');
+    if (!sidebar || !active) return;
+    const offset = active.offsetTop - sidebar.clientHeight / 2 + active.offsetHeight / 2;
+    sidebar.scrollTo({ top: Math.max(0, offset), behavior: 'instant' });
+  }, [currentChapter, currentSection, expanded]);
+
   useEffect(() => {
     const query = window.matchMedia('(max-width: 900px)');
     const onChange = (event: MediaQueryListEvent) => setMobileLayout(event.matches);

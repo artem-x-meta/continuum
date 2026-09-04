@@ -50,11 +50,10 @@ export const copies = {
     },
     lesson: {
       toc: 'Оглавление', book: 'Книга', chapter: 'Глава', bookmark: 'Добавить в закладки', removeBookmark: 'Убрать из закладок', copy: 'Скопировать ссылку', copied: 'Ссылка скопирована', copyFailed: 'Не удалось скопировать ссылку',
-      minuteForms: ['минута', 'минуты', 'минут'], base: 'База', middle: 'Средний', advanced: 'Продвинутый', blockForms: ['блок', 'блока', 'блоков'],
-      goalsFallback: ['объяснять центральную идею параграфа', 'применять основной результат в типовой задаче', 'распознавать условия применимости метода'],
-      explainTopic: 'объяснять тему', why: 'Зачем это нужно', unpack: 'Разберём идею', oneLine: 'Смысл в одной строке',
+      topicForms: ['тема', 'темы', 'тем'],
+      why: 'Зачем это нужно', unpack: 'Разберём идею', oneLine: 'Смысл в одной строке',
       formula: 'Опорная формула', formulaCaption: 'Формулу стоит читать вместе с условиями параграфа: обозначения обретают смысл только в контексте задачи.',
-      route: 'Маршрут параграфа', startBlock: 'Начинаем с языка и базовых объектов.', endBlock: 'Собираем идеи параграфа в рабочий метод.', middleBlock: 'Добавляем следующий слой к общей конструкции.',
+      route: 'Что разбирается в параграфе',
       whole: 'Это цельный параграф: определение, смысл, основной результат и его применение разбираются как одна непрерывная идея.',
       solution: 'От идеи к решению', mistake: 'Где чаще всего ошибаются', selfCheck: 'Вопрос для самопроверки',
       answerGuide: 'Открыть ориентир для ответа', answerGuideText: 'Попробуй дополнить эту мысль условиями, обозначениями из формулы и одним собственным примером.',
@@ -64,7 +63,8 @@ export const copies = {
       back: 'Назад', next: 'Дальше', adjacent: 'Соседние параграфы', onPage: 'На этой странице', experiment: 'Эксперимент', definition: 'Определение', example: 'Разобранный пример', bookProgress: 'Прогресс книги',
     },
     blocks: {
-      goals: 'После параграфа ты сможешь', worked: 'Разобранный пример', check: 'Проверь себя · 1 минута', exact: 'Точно.', almost: 'Почти.', retry: 'Ответить ещё раз',
+      goals: 'После параграфа ты сможешь', worked: 'Разобранный пример', check: 'Проверь себя · 1 минута', checkShort: 'Проверь себя', exact: 'Точно.', almost: 'Почти.', retry: 'Ответить ещё раз',
+      correctAnswer: 'правильный ответ', wrongAnswer: 'твой ответ, неверный', theAnswerIs: 'Правильный ответ —',
       showAnswer: 'Показать ответ', hide: 'Скрыть разбор', glossary: 'Словарь параграфа', steps: 'Разбор по шагам', problem: 'Задача', hidden: 'Шаг пока скрыт', answer: 'Ответ', restart: 'Пройти заново', showFirst: 'Показать первый шаг', showNext: 'Показать следующий шаг',
     },
     labs: {
@@ -130,11 +130,10 @@ export const copies = {
     },
     lesson: {
       toc: 'Contents', book: 'Book', chapter: 'Chapter', bookmark: 'Add bookmark', removeBookmark: 'Remove bookmark', copy: 'Copy link', copied: 'Link copied', copyFailed: 'Could not copy link',
-      minuteForms: ['minute', 'minutes', 'minutes'], base: 'Foundation', middle: 'Intermediate', advanced: 'Advanced', blockForms: ['block', 'blocks', 'blocks'],
-      goalsFallback: ['explain the central idea of the section', 'apply its main result to a standard problem', 'recognize when the method is valid'],
-      explainTopic: 'explain', why: 'Why it matters', unpack: 'Unpack the idea', oneLine: 'The idea in one line',
+      topicForms: ['topic', 'topics', 'topics'],
+      why: 'Why it matters', unpack: 'Unpack the idea', oneLine: 'The idea in one line',
       formula: 'Anchor formula', formulaCaption: 'Read every formula together with its assumptions: symbols acquire meaning only inside a mathematical context.',
-      route: 'Section route', startBlock: 'Begin with the language and basic objects.', endBlock: 'Assemble the ideas into a working method.', middleBlock: 'Add the next layer to the construction.',
+      route: 'What this section covers',
       whole: 'This is one continuous section: definition, meaning, main result, and application form a single line of thought.',
       solution: 'From idea to solution', mistake: 'The most common mistake', selfCheck: 'Question for self-check',
       answerGuide: 'Open an answer guide', answerGuideText: 'Complete this thought with the assumptions, symbols from the formula, and one example of your own.',
@@ -144,7 +143,8 @@ export const copies = {
       back: 'Back', next: 'Next', adjacent: 'Adjacent sections', onPage: 'On this page', experiment: 'Experiment', definition: 'Definition', example: 'Worked example', bookProgress: 'Book progress',
     },
     blocks: {
-      goals: 'After this section, you can', worked: 'Worked example', check: 'Check yourself · 1 minute', exact: 'Exactly.', almost: 'Not quite.', retry: 'Try again',
+      goals: 'After this section, you can', worked: 'Worked example', check: 'Check yourself · 1 minute', checkShort: 'Check yourself', exact: 'Exactly.', almost: 'Not quite.', retry: 'Try again',
+      correctAnswer: 'correct answer', wrongAnswer: 'your answer, incorrect', theAnswerIs: 'The correct answer is',
       showAnswer: 'Show answer', hide: 'Hide explanation', glossary: 'Section glossary', steps: 'Step-by-step solution', problem: 'Problem', hidden: 'Step hidden', answer: 'Answer', restart: 'Start over', showFirst: 'Show first step', showNext: 'Show next step',
     },
     labs: {

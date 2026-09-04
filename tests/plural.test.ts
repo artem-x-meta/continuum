@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { plural, pluralForRange, pluralIndex } from '../src/i18n/plural';
+import { plural, pluralIndex } from '../src/i18n/plural';
 import { copies } from '../src/i18n/copy';
 
 const темы = ['тема', 'темы', 'тем'] as const;
@@ -42,16 +42,6 @@ describe('английские числительные', () => {
   });
 });
 
-describe('диапазоны', () => {
-  it('согласует форму с последним числом', () => {
-    const минуты = ['минута', 'минуты', 'минут'] as const;
-    expect(pluralForRange('50–65', минуты, 'ru')).toBe('минут');
-    expect(pluralForRange('20–30', минуты, 'ru')).toBe('минут');
-    expect(pluralForRange('20–32', минуты, 'ru')).toBe('минуты');
-    expect(pluralForRange('1', минуты, 'ru')).toBe('минута');
-  });
-});
-
 describe('словарь', () => {
   it('во всех наборах форм ровно три варианта', () => {
     for (const [language, copy] of Object.entries(copies)) {
@@ -60,8 +50,7 @@ describe('словарь', () => {
         ['chapter.hourForms', copy.chapter.hourForms],
         ['chapter.sectionForms', copy.chapter.sectionForms],
         ['chapter.blockForms', copy.chapter.blockForms],
-        ['lesson.minuteForms', copy.lesson.minuteForms],
-        ['lesson.blockForms', copy.lesson.blockForms],
+        ['lesson.topicForms', copy.lesson.topicForms],
       ];
       for (const [name, forms] of sets) {
         expect(forms, `${language}.${name}`).toHaveLength(3);
@@ -74,6 +63,6 @@ describe('словарь', () => {
     expect(new Set(copies.ru.catalog.topicForms).size).toBe(3);
     expect(new Set(copies.ru.chapter.hourForms).size).toBe(3);
     expect(new Set(copies.ru.chapter.sectionForms).size).toBe(3);
-    expect(new Set(copies.ru.lesson.blockForms).size).toBe(3);
+    expect(new Set(copies.ru.lesson.topicForms).size).toBe(3);
   });
 });

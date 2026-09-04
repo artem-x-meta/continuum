@@ -805,7 +805,7 @@ export const englishSections1: Record<number, EnglishSectionBundle> = {
       'Table of Derivatives',
     ],
     guide: {
-      summary: 'The derivative of a function at a point is the limit of the ratio of the increment of the function to the increment of its argument, provided this finite limit exists. Geometrically it gives the slope of the tangent line; in mechanics, it gives instantaneous velocity, and differentiation rules make it possible to find derivatives without recomputing the limit each time.',
+      summary: 'The derivative of a function at a point is the limit of the ratio of the increment of the function to the increment of its argument as that increment tends to zero, provided this finite limit exists. Geometrically it gives the slope of the tangent line; in mechanics, it gives instantaneous velocity, and differentiation rules make it possible to find derivatives without recomputing the limit each time.',
       keyIdea: 'The derivative measures the linear rate of change of a function on an infinitesimal scale.',
       formula: 'f\'(x)=\\lim_{h\\to0}\\frac{f(x+h)-f(x)}{h}',
       question: 'Does differentiability at a point imply continuity there, and is the converse true?',

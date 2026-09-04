@@ -1,13 +1,13 @@
-import { useMemo, useRef, useState, type ComponentType } from 'react';
-import { ArrowLeft, ArrowRight, Bookmark, Check, Clock3, Copy, Gauge, Lightbulb, Menu, Network } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState, type ComponentType } from 'react';
+import { ArrowLeft, ArrowRight, Bookmark, Check, Copy, Lightbulb, Menu, Network } from 'lucide-react';
 import { BookSidebar } from '../components/BookSidebar';
 import { Math } from '../components/Math';
-import { ConceptCard, LearningGoals, Reveal, StepExample, TermExplorer } from '../components/LessonBlocks';
+import { ConceptCard, Reveal, StepExample, TermExplorer } from '../components/LessonBlocks';
 import { getRelatedSectionNumbers } from '../data/relations';
 import { routeHref } from '../routing';
 import { DerivativeLesson, FourierLesson, MatricesLesson, RiemannLesson } from './lessonContent';
 import { useLocale } from '../i18n/LocaleContext';
-import { plural, pluralForRange } from '../i18n/plural';
+import { plural } from '../i18n/plural';
 import { MatrixLab } from '../components/labs/MatrixLab';
 import { DerivativeLab } from '../components/labs/DerivativeLab';
 import { RiemannLab } from '../components/labs/RiemannLab';
@@ -39,6 +39,50 @@ const localizedLabs: Partial<Record<number, ComponentType>> = {
   66: FourierLab,
 };
 
+type OutlineItem = { id: string; label: string };
+
+/**
+ * Оглавление страницы собирается из того, что реально отрендерилось,
+ * а не из заранее заданного списка: блоки у параграфов разные.
+ */
+function useArticleOutline(key: string) {
+  const [outline, setOutline] = useState<OutlineItem[]>([]);
+  const [activeHeading, setActiveHeading] = useState('');
+
+  useEffect(() => {
+    const body = document.querySelector('.lesson-body');
+    if (!body) return;
+
+    const items: OutlineItem[] = [];
+    body.querySelectorAll<HTMLElement>(':scope > section, :scope > aside').forEach((block, index) => {
+      const label = (block.dataset.outline ?? block.querySelector('h2, h3')?.textContent ?? '').trim();
+      if (!label) return;
+      if (!block.id) block.id = `block-${index + 1}`;
+      items.push({ id: block.id, label });
+    });
+    setOutline(items);
+    setActiveHeading(items[0]?.id ?? '');
+    if (!items.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible.length) setActiveHeading(visible[0].target.id);
+      },
+      { rootMargin: '-90px 0px -55% 0px' },
+    );
+    for (const item of items) {
+      const element = document.getElementById(item.id);
+      if (element) observer.observe(element);
+    }
+    return () => observer.disconnect();
+  }, [key]);
+
+  return { outline, activeHeading };
+}
+
 function GenericLesson({ sectionNumber }: { sectionNumber: number }) {
   const { language, copy, findSection, sectionGuides, lessonDetails } = useLocale();
   const c = copy.lesson;
@@ -48,13 +92,9 @@ function GenericLesson({ sectionNumber }: { sectionNumber: number }) {
   const detail = lessonDetails[sectionNumber];
   const Lab = localizedLabs[sectionNumber];
   const related = getRelatedSectionNumbers(sectionNumber).map((number) => findSection(number)).filter((item) => item !== undefined);
-  const goals = section.topics.length
-    ? section.topics.slice(0, 5).map((topic) => language === 'ru' ? `${c.explainTopic} «${topic.title.toLocaleLowerCase('ru')}»` : `${c.explainTopic} “${topic.title}”`)
-    : [...c.goalsFallback];
 
   return (
     <>
-      <LearningGoals items={goals} />
       {Lab && <Lab />}
       <section id="idea">
         <h2>{c.why}</h2>
@@ -72,14 +112,14 @@ function GenericLesson({ sectionNumber }: { sectionNumber: number }) {
       <section id="route">
         <h2>{c.route}</h2>
         {section.topics.length ? (
-          <div className="topic-route">
-            {section.topics.map((topic, index) => (
-              <article id={`topic-${topic.number.replace('.', '-')}`} key={topic.number}>
-                <span>{String(index + 1).padStart(2, '0')}</span>
-                <div><small>{topic.number}</small><h3>{topic.title}</h3><p>{index === 0 ? c.startBlock : index === section.topics.length - 1 ? c.endBlock : c.middleBlock}</p></div>
-              </article>
+          <ol className="topic-route">
+            {section.topics.map((topic) => (
+              <li id={`topic-${topic.number.replace('.', '-')}`} key={topic.number}>
+                <span>{topic.number}</span>
+                <h3>{topic.title}</h3>
+              </li>
             ))}
-          </div>
+          </ol>
         ) : <p>{c.whole}</p>}
       </section>
       <section id="example">
@@ -135,8 +175,8 @@ export function LessonPage({
   const Featured = language === 'ru' ? featuredLessons[section.number] : undefined;
   const complete = completed.has(section.number);
   const bookmarked = bookmarks.has(section.number);
-  const readingTime = Featured ? '50–65' : '20–30';
-  const blockCount = section.topics.length || 1;
+  const topicCount = section.topics.length;
+  const { outline, activeHeading } = useArticleOutline(`${language}-${section.number}`);
 
   const closeSidebar = () => {
     onCloseSidebar();
@@ -180,7 +220,7 @@ export function LessonPage({
             <div className="lesson-header__topline"><span className="eyebrow">§ {section.number} · {meta.shortTitle}</span><div><button type="button" className={bookmarked ? 'is-active' : ''} onClick={() => onToggleBookmark(section.number)} aria-label={bookmarked ? c.removeBookmark : c.bookmark} aria-pressed={bookmarked}><Bookmark size={18} fill={bookmarked ? 'currentColor' : 'none'} /></button><button type="button" onClick={copyLink} aria-label={copied ? c.copied : copyFailed ? c.copyFailed : c.copy}>{copied ? <Check size={18} /> : <Copy size={18} />}</button><span className="sr-only" role="status" aria-live="polite">{copied ? c.copied : copyFailed ? c.copyFailed : ''}</span></div></div>
             <h1>{section.title}</h1>
             <p>{guide?.summary}</p>
-            <div className="lesson-meta"><span><Clock3 size={16} /> {readingTime} {pluralForRange(readingTime, c.minuteForms, language)}</span><span><Gauge size={16} /> {section.number < 13 ? c.base : section.number < 47 ? c.middle : c.advanced}</span><span>{blockCount} {plural(blockCount, c.blockForms, language)}</span></div>
+            {topicCount > 0 && <div className="lesson-meta"><span>{topicCount} {plural(topicCount, c.topicForms, language)}</span></div>}
           </header>
 
           <div className="lesson-body">
@@ -200,10 +240,17 @@ export function LessonPage({
 
         <aside className="lesson-outline">
           <span>{c.onPage}</span>
-          <button type="button" onClick={() => document.getElementById(Featured ? 'experiment' : 'idea')?.scrollIntoView()}>{Featured ? c.experiment : c.why}</button>
-          <button type="button" onClick={() => document.getElementById(Featured ? 'definition' : 'formula')?.scrollIntoView()}>{Featured ? c.definition : c.formula}</button>
-          <button type="button" onClick={() => document.getElementById(Featured ? 'check' : 'example')?.scrollIntoView()}>{Featured ? c.selfCheck : c.example}</button>
-          {!Featured && <button type="button" onClick={() => document.getElementById('practice')?.scrollIntoView()}>{c.practice}</button>}
+          {outline.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              className={activeHeading === item.id ? 'is-current' : ''}
+              aria-current={activeHeading === item.id ? 'true' : undefined}
+              onClick={() => document.getElementById(item.id)?.scrollIntoView()}
+            >
+              {item.label}
+            </button>
+          ))}
           <div className="outline-progress"><span>{c.bookProgress}</span><strong>{completed.size}/80</strong><i><b style={{ width: `${(completed.size / 80) * 100}%` }} /></i></div>
         </aside>
       </main>

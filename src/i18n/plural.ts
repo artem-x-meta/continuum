@@ -20,9 +20,3 @@ export function plural(count: number, forms: PluralForms, language: Language) {
   return forms[pluralIndex(count, language)];
 }
 
-/** «50–65 минут»: согласуем с последним числом диапазона. */
-export function pluralForRange(range: string, forms: PluralForms, language: Language) {
-  const numbers = range.match(/\d+/g);
-  const last = numbers?.length ? Number(numbers[numbers.length - 1]) : 0;
-  return plural(last, forms, language);
-}

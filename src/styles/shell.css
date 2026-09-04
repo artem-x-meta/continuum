@@ -14,6 +14,7 @@ kbd { display: inline-grid; min-width: 24px; height: 24px; place-items: center; 
 .language-switch { display: flex; padding: 3px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); }
 .language-switch button { min-width: 32px; height: 31px; padding: 0 7px; color: var(--ink-faint); border: 0; border-radius: 999px; background: transparent; cursor: pointer; font-size: var(--t-2xs); font-weight: 850; }
 .language-switch button.is-active { color: white; background: var(--navy); }
+:root[data-theme='dark'] .language-switch button.is-active { color: var(--paper-deep); background: var(--ink-soft); }
 .mobile-menu-button { display: none; }
 .mobile-nav { position: absolute; top: 66px; right: 14px; left: 14px; display: grid; padding: 10px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-md); }
 .mobile-nav a, .mobile-nav button { display: flex; min-height: 48px; align-items: center; gap: 10px; padding: 0 12px; text-align: left; border: 0; border-radius: var(--radius); background: transparent; cursor: pointer; }

@@ -44,16 +44,36 @@ export function QuickCheck({ question, options, correctIndex }: QuickCheckProps)
   const [selected, setSelected] = useState<number | null>(null);
   const id = useId();
   return (
-    <section className="quick-check" id="check">
+    <section className="quick-check" id="check" data-outline={c.checkShort}>
       <span className="quick-check__kicker">{c.check}</span>
       <h3>{question}</h3>
       <div className="quick-check__options" role="radiogroup" aria-label={question}>
         {options.map((option, index) => {
           const state = selected === null ? '' : index === correctIndex ? 'is-correct' : selected === index ? 'is-wrong' : 'is-muted';
-          return <button key={`${id}-${index}`} className={state} type="button" role="radio" aria-checked={selected === index} onClick={() => setSelected(index)} disabled={selected !== null}><span>{String.fromCharCode(65 + index)}</span>{option.label}{selected !== null && index === correctIndex && <Check size={17} />}</button>;
+          const verdict = selected === null ? '' : index === correctIndex ? `. ${c.correctAnswer}` : selected === index ? `. ${c.wrongAnswer}` : '';
+          return (
+            <button
+              key={`${id}-${index}`}
+              className={state}
+              type="button"
+              role="radio"
+              aria-checked={selected === index}
+              aria-describedby={selected !== null && index === correctIndex ? `${id}-feedback` : undefined}
+              aria-label={`${option.label}${verdict}`}
+              onClick={() => selected === null && setSelected(index)}
+            >
+              <span>{String.fromCharCode(65 + index)}</span>{option.label}{selected !== null && index === correctIndex && <Check size={17} />}
+            </button>
+          );
         })}
       </div>
-      {selected !== null && <div className={`quick-check__feedback ${selected === correctIndex ? 'is-correct' : 'is-wrong'}`} role="status" aria-live="polite"><strong>{selected === correctIndex ? c.exact : c.almost}</strong> {options[selected].explanation}</div>}
+      {selected !== null && (
+        <div id={`${id}-feedback`} className={`quick-check__feedback ${selected === correctIndex ? 'is-correct' : 'is-wrong'}`} role="status" aria-live="polite">
+          <strong>{selected === correctIndex ? c.exact : c.almost}</strong>{' '}
+          {selected === correctIndex ? '' : `${c.theAnswerIs} «${options[correctIndex].label}». `}
+          {options[selected].explanation}
+        </div>
+      )}
       {selected !== null && <button type="button" className="quick-check__retry" onClick={() => setSelected(null)}>{c.retry}</button>}
     </section>
   );
