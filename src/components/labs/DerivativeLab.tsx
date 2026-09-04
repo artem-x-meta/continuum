@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { derivativeFunction, exactDerivative, secantSlope } from '../../lib/math';
 import { useLocale } from '../../i18n/LocaleContext';
+import { LabTask } from './LabTask';
 
 const width = 640;
 const height = 330;
@@ -81,6 +82,7 @@ export function DerivativeLab() {
         <div><span>{c.error}</span><strong>{Math.abs(slope - tangent).toFixed(3)}</strong></div>
       </div>
       <p className="lab-hint">{c.derivativeHint}</p>
+      <LabTask text={c.derivativeTask} done={Math.abs(slope - tangent) < 0.05} />
     </section>
   );
 }

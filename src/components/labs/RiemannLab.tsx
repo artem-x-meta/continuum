@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { midpointRiemann, riemannExact, riemannFunction } from '../../lib/math';
 import { useLocale } from '../../i18n/LocaleContext';
+import { LabTask } from './LabTask';
 
 const width = 640;
 const height = 320;
@@ -60,6 +61,7 @@ export function RiemannLab() {
         <div><span>{c.error}</span><strong>{Math.abs(approximate - exact).toFixed(4)}</strong></div>
       </div>
       <p className="lab-hint">{c.riemannHint}</p>
+      <LabTask text={c.riemannTask} done={Math.abs(approximate - exact) < 0.01} />
     </section>
   );
 }

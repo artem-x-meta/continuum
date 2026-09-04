@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { RotateCcw } from 'lucide-react';
 import { determinant, transformPoint, type Matrix2 } from '../../lib/math';
 import { useLocale } from '../../i18n/LocaleContext';
+import { LabTask } from './LabTask';
 
 const size = 360;
 const scale = 58;
@@ -116,6 +117,7 @@ export function MatrixLab() {
             <div><span>{c.orientation}</span><strong>{!validDraft ? c.invalid : collapsed ? c.collapsed : nearlyCollapsed ? c.nearCollapsed : det > 0 ? c.preserved : c.reversed}</strong></div>
           </div>
           <p className="lab-hint">{c.matrixHint}</p>
+          <LabTask text={c.matrixTask} done={validDraft && Math.abs(det) < 0.005} />
         </div>
       </div>
     </section>

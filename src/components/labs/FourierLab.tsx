@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { fourierSquare } from '../../lib/math';
 import { useLocale } from '../../i18n/LocaleContext';
+import { LabTask } from './LabTask';
 
 const width = 640;
 const height = 290;
@@ -11,6 +12,16 @@ export function FourierLab() {
   const { copy } = useLocale();
   const c = copy.labs;
   const [harmonics, setHarmonics] = useState(3);
+  // Максимум |f(x) − 1| на плато, в стороне от скачков: показывает, как сумма
+  // сходится там, где эффект Гиббса ни при чём.
+  const deviation = useMemo(() => {
+    let worst = 0;
+    for (let index = 0; index <= 200; index += 1) {
+      const x = 0.6 + ((Math.PI - 1.2) * index) / 200;
+      worst = Math.max(worst, Math.abs(fourierSquare(x, harmonics) - 1));
+    }
+    return worst;
+  }, [harmonics]);
   const path = useMemo(() => Array.from({ length: 401 }, (_, index) => {
     const x = -Math.PI + (index / 400) * 2 * Math.PI;
     return `${index ? 'L' : 'M'} ${sx(x)} ${sy(fourierSquare(x, harmonics))}`;
@@ -40,7 +51,11 @@ export function FourierLab() {
           <input type="range" min="1" max="18" step="1" value={harmonics} onChange={(event) => setHarmonics(Number(event.target.value))} />
         </label>
       </div>
+      <div className="lab-readout" aria-live="polite" aria-atomic="true">
+        <div><span>{c.deviation}</span><strong>{deviation.toFixed(3)}</strong></div>
+      </div>
       <p className="lab-hint">{c.fourierHint}</p>
+      <LabTask text={c.fourierTask} done={deviation < 0.05} />
     </section>
   );
 }
